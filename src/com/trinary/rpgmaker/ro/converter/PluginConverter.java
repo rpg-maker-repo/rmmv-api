@@ -48,7 +48,7 @@ public class PluginConverter extends ROConverter<PluginRO, Plugin> {
 		ro.setCompatibleRMVersion(entity.getCompatibleRMVersion());
 		ro.setHash(entity.getHash());
 		ro.setDateCreated(entity.getDateCreated());
-		ro.setScript(new String(Base64.decodeBase64(entity.getScript())));
+		//ro.setScript(new String(Base64.decodeBase64(entity.getScript())));
 		
 		return ro;
 	}
@@ -61,9 +61,11 @@ public class PluginConverter extends ROConverter<PluginRO, Plugin> {
 			
 			Class<?> resource = PluginResource.class;
 			Method get = resource.getMethod("get", Long.class);
+			Method getScript = resource.getMethod("getScript", Long.class);
 			Method addDependencies = resource.getMethod("addDependencies", Long.class, List.class);
 			Method getDependencies = resource.getMethod("getDependencies", Long.class);
 			object.addLink(generator.createLink(get, args).setRel("self"));
+			object.addLink(generator.createLink(getScript, args).setRel("get-script"));
 			object.addLink(generator.createLink(addDependencies, args).setRel("add-dependencies"));
 			object.addLink(generator.createLink(getDependencies, args).setRel("get-dependencies"));
 		} catch (NoSuchMethodException e) {

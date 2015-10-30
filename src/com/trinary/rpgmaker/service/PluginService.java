@@ -43,8 +43,12 @@ public class PluginService {
 		return converter.convertEntityList(dao.getAll());
 	}
 	
-	public PluginRO getById(long id) {
+	public PluginRO getById(Long id) {
 		return converter.convertEntity(dao.get(id));
+	}
+	
+	public String getScript(Long id) {
+		return new String(Base64.decodeBase64(dao.getScript(id)));
 	}
 	
 	public PluginRO addDependencies(Long id, List<PluginRO> dependencies) {

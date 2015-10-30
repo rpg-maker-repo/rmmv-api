@@ -47,6 +47,11 @@ public class PluginDao {
 		return save(plugin);
 	}
 	
+	public String getScript(Long id) {
+		Plugin plugin = get(id);
+		return plugin.getScript();
+	}
+	
 	public List<Plugin> getDependencies(Long id) {
 		Plugin plugin = get(id);
 		List<Plugin> deps = new ArrayList<Plugin>(plugin.getDependencies());

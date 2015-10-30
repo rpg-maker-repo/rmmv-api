@@ -38,6 +38,12 @@ public class PluginResource {
 		return Response.ok(service.getById(id)).build();
 	}
 	
+	@Path("/{id}/script")
+	@GET
+	public Response getScript(@PathParam("id") Long id) {
+		return Response.ok(service.getScript(id)).build();
+	}
+	
 	@Path("/{id}/dependency")
 	@GET
 	public Response getDependencies(@PathParam("id") Long id) {

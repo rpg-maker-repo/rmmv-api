@@ -4,6 +4,8 @@
 			.plugin, .dependency {
 				margin-top: 5px;
 				margin-bottom: 5px;
+				padding-left: 10px;
+				padding-right: 10px;
 				border: 1px solid black;
 			}
 			
@@ -47,6 +49,10 @@
 				cursor: pointer;
 			}
 			
+			.indented {
+				margin-left: 10px;
+			}
+			
 			ul.tabs > li:hover, .tab-selected {
 				background-color: blue;
 			}
@@ -76,7 +82,7 @@
 				<div class="plugin-list">
 					<div id="plugin-{{plugin.id}}" class="plugin" ng-repeat="plugin in plugins">
 						<h2>{{plugin.name}}</h2>
-						<table class="plugin-table">
+						<table class="plugin-table indented">
 							<tr>
 								<td>Description:</td>
 								<td>{{plugin.description}}</td>
@@ -101,8 +107,8 @@
 						<div id="plugin-{{plugin.id}}-deps" class="plugin-deps">
 							<h3 ng-show="plugin.dependencies.length > 0">Dependencies</h3>
 							<div id="dep-{{dep.id}}" class="dependency" ng-repeat="dep in plugin.dependencies">
-								<table class="dependency-table">
-									<tr><td>Name:</td><td>{{dep.name}}</td></tr>
+								<h3>{{dep.name}}</h3>
+								<table class="dependency-table indented">
 									<tr><td>Description:</td><td>{{dep.description}}</td></tr>
 									<tr><td>Version:</td><td>{{dep.version}}</td></tr>
 									<tr><td>RPG Maker Version:</td><td>{{dep.compatibleRMVersion}}</td></tr>
@@ -115,7 +121,7 @@
 			<div ng-show="page.view == 'create-plugin'">
 				<h1>Create Plugin</h1>
 				<div class="create-plugin-div">
-					<form>
+					<form id="newPluginForm">
 						<table>
 							<tr>
 								<td>Name</td>
@@ -134,12 +140,20 @@
 								<td><input type="text" ng-model="newPlugin.compatibleRMVersion"></input></td>
 							</tr>
 							<tr>
+								<td>Add Dependencies</td>
+								<td>
+									<select id="create-plugin-deps" ng-model="dependencies" multiple>
+										<option value="{{plugin.id}}" ng-repeat="plugin in plugins">{{plugin.name}}({{plugin.version}})</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
 								<td>File:</td>
 								<td><input type="file" on-read-file="loadScript(newPlugin, $fileContent)"></input></td>
 							</tr>
 						</table>
 					</form>
-					<button ng-click="createPlugin(newPlugin)">Create</button>
+					<button ng-click="createPlugin(newPlugin, dependencies); clearForm('#newPluginForm');">Create</button>
 				</div>
 			</div>
 		</div>

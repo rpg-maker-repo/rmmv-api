@@ -50,19 +50,38 @@ app.controller('page-controller', function($scope) {
 		$scope.fileContent = $fileContent;
 	};
 	
-	$scope.createPlugin = function(plugin) {
+	$scope.createPlugin = function(newPlugin, dependencyIds) {
+		// Create the plugin and save it.
+		plugin = RMMV.Plugin.create(newPlugin);
 		plugin.script = $scope.fileContent;
-		plugin = RMMV.Plugin.create(plugin);
+		if (!plugin.script) {
+			return;
+		}
+		plugin = RMMV.Web.createPlugin(plugin);
 		
-		if (plugin.script) {
-			RMMV.Web.createPlugin(plugin);
+		// Add depdencies if there are any.
+		if (dependencyIds) {
+			var dependencies = [];
+			for (var i = 0; i < dependencyIds.length; i++) {
+				var dependency = RMMV.Plugin();
+				dependency.id = dependencyIds[i];
+				dependencies.push(dependency);
+			}
+			plugin.addDependencies(dependencies);
 		}
 		
-		plugin = {};
-		
+		// Go back to view-plugins page.
 		$scope.page.view = "view-plugins";
 		$scope.reloadPluginList();
 	};
+	
+	$scope.clearForm = function(formId) {
+		$(':input', formId)
+		.not(':button, :submit, :reset, :hidden')
+		.val('')
+		.removeAttr('checked')
+		.removeAttr('selected');
+	}
 	
 	$scope.reloadPluginList();
 });

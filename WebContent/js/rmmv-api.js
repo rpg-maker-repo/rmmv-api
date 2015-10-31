@@ -115,17 +115,15 @@ RMMV.Web.getPlugins = function() {
 };
 
 RMMV.Web.getPluginScript = function(id) {
-	var script = null;
-	$.ajax({
+	var script = $.ajax({
 		type: "GET",
 		accept: "text/plain",
 		url: RMMV.Web.baseUrl + "/v1/plugin/" + id + "/script",
-		success: function(data) {
-			script = data;
-		},
+		success: function(data) {},
+		error: function(data, status) {},
 		dataType: "script",
 		async: false
-	});
+	}).responseText;
 	
 	return script;
 };

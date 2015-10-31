@@ -40,6 +40,7 @@ public class PluginResource {
 	
 	@Path("/{id}/script")
 	@GET
+	@Produces(MediaType.TEXT_PLAIN)
 	public Response getScript(@PathParam("id") Long id) {
 		return Response.ok(service.getScript(id)).build();
 	}

@@ -1,5 +1,54 @@
 <html>
 	<head>
+		<style>
+			.plugin, .dependency {
+				margin-top: 5px;
+				margin-bottom: 5px;
+				border: 1px solid black;
+			}
+			
+			.dependency {
+				background-color: gray;
+				color: white;
+			}
+			
+			.plugin-script {
+				background-color: blue;
+				color: white;
+				width: 800px;
+				min-height: 200px;
+				padding: 5px;
+			}
+			
+			.plugin-deps {
+				margin-left: 20px;
+				margin-right: 30px;
+			}
+			
+			.plugin table tr td:first-child {
+				font-weight: bold;
+			}
+			
+			table.dependency-table {
+				color: white;
+			}
+			
+			ul.tabs > li {
+				display: table-cell;
+				width: 100px;
+				height: 50px;
+				background-color: gray;
+				border-left: 10px solid white;
+				color: white;
+				vertical-align: middle;
+				text-align: center;
+				cursor: pointer;
+			}
+			
+			ul.tabs > li:hover, .tab-selected {
+				background-color: blue;
+			}
+		</style>
 		<script src="https://code.angularjs.org/1.4.7/angular.min.js"></script>
 		<script
 			src="https://code.angularjs.org/1.4.7/angular-route.min.js"></script>
@@ -7,12 +56,90 @@
 			src="https://code.angularjs.org/1.4.7/angular-resource.min.js"></script>
 		<script
 			src="https://code.angularjs.org/1.4.7/angular-cookies.min.js"></script>
-		<script
-			src="https://code.angularjs.org/1.47/angular-animate.min.js"></script>
 		<script src="http://code.jquery.com/jquery-2.1.4.js"></script>
 		<script src="js/rmmv-api.js"></script>
 		<script src="js/rmmv-ang.js"></script>
 	</head>
 	<body>
+		<div ng-app="rmmv-ui" ng-controller="page-controller">
+			<div class="menu">
+				<ul class="tabs">
+					<li ng-click="page.view = 'view-plugins'">View Plugins</li>
+					<li ng-click="page.view = 'create-plugin'">Create Plugin</li>
+				</ul>
+			</div>
+
+			<div ng-show="page.view == 'view-plugins'">
+				<h1>All Plugins</h1>
+				<div class="plugin-list">
+					<div id="plugin-{{plugin.id}}" class="plugin" ng-repeat="plugin in plugins">
+						<h2>{{plugin.name}}</h2>
+						<table class="plugin-table">
+							<tr>
+								<td>Description:</td>
+								<td>{{plugin.description}}</td>
+							</tr>
+							<tr>
+								<td>Version:</td>
+								<td>{{plugin.version}}</td>
+							</tr>
+							<tr>
+								<td>RPG Maker Version:</td>
+								<td>{{plugin.compatibleRMVersion}}</td>
+							</tr>
+							<tr>
+								<td style="vertical-align: top;"><button ng-click="toggleScript(plugin)">Show Script</button></td>
+								<td>
+									<div class="plugin-script" ng-show="plugin.showScript">
+										{{plugin.script}}
+									</div>
+								</td>
+							</tr>
+						</table>
+						<div id="plugin-{{plugin.id}}-deps" class="plugin-deps">
+							<h3 ng-show="plugin.dependencies.length > 0">Dependencies</h3>
+							<div id="dep-{{dep.id}}" class="dependency" ng-repeat="dep in plugin.dependencies">
+								<table class="dependency-table">
+									<tr><td>Name:</td><td>{{dep.name}}</td></tr>
+									<tr><td>Description:</td><td>{{dep.description}}</td></tr>
+									<tr><td>Version:</td><td>{{dep.version}}</td></tr>
+									<tr><td>RPG Maker Version:</td><td>{{dep.compatibleRMVersion}}</td></tr>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div ng-show="page.view == 'create-plugin'">
+				<h1>Create Plugin</h1>
+				<div class="create-plugin-div">
+					<form>
+						<table>
+							<tr>
+								<td>Name</td>
+								<td><input type="text" ng-model="newPlugin.name"></input></td>
+							</tr>
+							<tr>
+								<td>Description</td>
+								<td><textarea ng-model="newPlugin.description"></textarea></td>
+							</tr>
+							<tr>
+								<td>Version</td>
+								<td><input type="text" ng-model="newPlugin.version"></input></td>
+							</tr>
+							<tr>
+								<td>RPG Maker Version:</td>
+								<td><input type="text" ng-model="newPlugin.compatibleRMVersion"></input></td>
+							</tr>
+							<tr>
+								<td>File:</td>
+								<td><input type="file" on-read-file="loadScript(newPlugin, $fileContent)"></input></td>
+							</tr>
+						</table>
+					</form>
+					<button ng-click="createPlugin(newPlugin)">Create</button>
+				</div>
+			</div>
+		</div>
 	</body>
 </html>

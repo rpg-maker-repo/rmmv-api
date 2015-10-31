@@ -26,13 +26,15 @@ public class PluginService {
 		
 		// Find hash
 		MessageDigest md;
-		try {
-			md = MessageDigest.getInstance("MD5");
-			md.update(pluginRo.getScript().getBytes());
-			String digest = Base64.encodeBase64String(md.digest());
-			pluginRo.setHash(digest);
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
+		if (pluginRo.getScript() != null) {
+			try {
+				md = MessageDigest.getInstance("MD5");
+				md.update(pluginRo.getScript().getBytes());
+				String digest = Base64.encodeBase64String(md.digest());
+				pluginRo.setHash(digest);
+			} catch (NoSuchAlgorithmException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		Plugin plugin = converter.convertRO(pluginRo);

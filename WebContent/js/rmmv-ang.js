@@ -1,29 +1,68 @@
-var plugin1 = RMMV.Plugin();
-plugin1.name = "Super cool plugin";
-plugin1.description = "This is the greatest";
-plugin1.version = "1.0";
-plugin1.compatibleRMVersion = "RMMV1.0+";
-plugin1.script = "console.log('FART');";
+var app = angular.module("rmmv-ui", ["ngCookies", "ngRoute", "ngResource"]);
 
-var plugin2 = RMMV.Plugin();
-plugin2.name = "CorePlugin";
-plugin2.description = "This is the greatest";
-plugin2.version = "1.5a";
-plugin2.compatibleRMVersion = "RMMV1.0+";
-plugin2.script = "console.log('FART');";
+app.directive('onReadFile', function ($parse) {
+	return {
+		restrict: 'A',
+		scope: false,
+		link: function(scope, element, attrs) {
+            var fn = $parse(attrs.onReadFile);
+            
+			element.on('change', function(onChangeEvent) {
+				var reader = new FileReader();
+                
+				reader.onload = function(onLoadEvent) {
+					scope.$apply(function() {
+						fn(scope, {$fileContent:onLoadEvent.target.result});
+					});
+				};
 
-var plugin3 = RMMV.Plugin();
-plugin3.name = "ItemMax Plugin";
-plugin3.description = "This is the greatest";
-plugin3.version = "2.1b";
-plugin3.compatibleRMVersion = "RMMV1.0+";
-plugin3.script = "console.log('FART');";
+				reader.readAsText((onChangeEvent.srcElement || onChangeEvent.target).files[0]);
+			});
+		}
+	};
+});
 
-plugin1 = RMMV.Web.createPlugin(plugin1);
-plugin2 = RMMV.Web.createPlugin(plugin2);
-plugin3 = RMMV.Web.createPlugin(plugin3);
-plugin1.addDependencies([plugin2, plugin3]);
+app.controller('page-controller', function($scope) {
+	$scope.page = {};
+	$scope.page.view = "view-plugins";
+	$scope.plugins = [];
+	
+	$scope.reloadPluginList = function() {
+		$scope.plugins = RMMV.Web.getPlugins();
+		for (var i = 0; i < $scope.plugins.length; i++) {
+			var plugin = $scope.plugins[i];
+			plugin.dependencies = plugin.getDependencies();
+		}
+	};
 
-console.log(RMMV.Web.getPlugins());
-console.log(plugin1.getDependencies());
-console.log(plugin1.getScript());
+	$scope.toggleScript = function(plugin) {
+		if (!plugin.script) {
+			plugin.script = plugin.getScript();
+		}
+		
+		if (!plugin.showScript) {
+			plugin.showScript = true;
+		} else {
+			plugin.showScript = false;
+		}
+	};
+	$scope.loadScript = function(plugin, $fileContent) {
+		$scope.fileContent = $fileContent;
+	};
+	
+	$scope.createPlugin = function(plugin) {
+		plugin.script = $scope.fileContent;
+		plugin = RMMV.Plugin.create(plugin);
+		
+		if (plugin.script) {
+			RMMV.Web.createPlugin(plugin);
+		}
+		
+		plugin = {};
+		
+		$scope.page.view = "view-plugins";
+		$scope.reloadPluginList();
+	};
+	
+	$scope.reloadPluginList();
+});

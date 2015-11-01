@@ -23,5 +23,7 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry combineaccessrules="false" kind="src" path="/rmmv-common"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/trinary-ro"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

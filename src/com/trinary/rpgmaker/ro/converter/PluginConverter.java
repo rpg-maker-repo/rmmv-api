@@ -10,6 +10,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.apache.commons.codec.binary.Base64;
 
+import com.trinary.ro.converter.ROConverter;
 import com.trinary.rpgmaker.persistence.entity.Plugin;
 import com.trinary.rpgmaker.resource.PluginResource;
 import com.trinary.rpgmaker.ro.PluginRO;

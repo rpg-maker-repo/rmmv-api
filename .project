@@ -4,6 +4,8 @@
 	<comment></comment>
 	<projects>
 		<project>trinary-string-utils</project>
+		<project>trinary-ro</project>
+		<project>rmmv-common</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

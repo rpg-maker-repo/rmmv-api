@@ -121,7 +121,59 @@
 				</div>
 			</div>
 			<div ng-show="page.view == 'create-plugin'">
-				<h1>Create Plugin</h1>
+				<h1>Create New Plugin Version</h1>
+				<div class="create-plugin-div">
+					<form id="newPluginForm">
+						<table>
+							<tr>
+								<td>Base Plugin</td>
+								<td>
+									<select ng-options="p.name for p in plugins" ng-model="selectedBase"></select>
+								</td>
+							</tr>
+							<tr>
+								<td>Name</td>
+								<td><input type="text" ng-model="selectedBase.name" disabled="true"></input></td>
+							</tr>
+							<tr>
+								<td>Description</td>
+								<td><textarea ng-model="selectedBase.description" disabled="true"></textarea></td>
+							</tr>
+							<tr>
+								<td>Version</td>
+								<td><input type="text" ng-model="newPluginVersion.version"></input></td>
+							</tr>
+							<tr>
+								<td>RPG Maker Version:</td>
+								<td><input type="text" ng-model="newPluginVersion.compatibleRMVersion"></input></td>
+							</tr>
+							<tr>
+								<td>Add Dependencies</td>
+								<td>
+									<select id="create-plugin-dep" ng-options="d.name for d in plugins" ng-model="selectedDependency1" ng-change="onDependencyChange();"></select>
+									<select id="create-plugin-dep-version" ng-model="selectedVersion1">
+										<option ng-value="$index" ng-repeat="version in selectedDependency1.versions">{{version.version}}</option>
+									</select>
+									<button ng-click="onAddDependency1(selectedDependency1.versions[selectedVersion1])">Add Dependency</button>
+								</td>
+							</tr>
+							<tr>
+								<td>Dependencies</td>
+								<td>
+									<select multiple disabled ng-model="dependencies1">
+										<option ng-repeat="addedDependency in dependencies1">{{addedDependency.name}}({{addedDependency.version}})</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<td>File:</td>
+								<td><input type="file" on-read-file="loadScript(newPlugin, $fileContent)"></input></td>
+							</tr>
+						</table>
+					</form>
+					<button ng-click="createPluginVersion(selectedBase, newPluginVersion, dependencies1); clearForm('#newPluginForm');">Create</button>
+				</div>
+				<h1>Create New Plugin</h1>
 				<div class="create-plugin-div">
 					<form id="newPluginForm">
 						<table>
@@ -134,18 +186,30 @@
 								<td><textarea ng-model="newPlugin.description"></textarea></td>
 							</tr>
 							<tr>
-								<td>Version</td>
-								<td><input type="text" ng-model="newPlugin.version"></input></td>
+								<td>Initial Version</td>
+								<td><input type="text" ng-model="newPluginVersion.version"></input></td>
 							</tr>
 							<tr>
 								<td>RPG Maker Version:</td>
-								<td><input type="text" ng-model="newPlugin.compatibleRMVersion"></input></td>
+								<td><input type="text" ng-model="newPluginVersion.compatibleRMVersion"></input></td>
 							</tr>
 							<tr>
 								<td>Add Dependencies</td>
 								<td>
-									<select id="create-plugin-deps" ng-model="dependencies" multiple>
-										<option value="{{plugin.id}}" ng-repeat="plugin in plugins">{{plugin.name}}({{plugin.version}})</option>
+									<select id="create-plugin-dep" ng-options="d.name for d in plugins" ng-model="selectedDependency2" ng-change="onDependencyChange();"></select>
+									<select id="create-plugin-dep-version" ng-model="selectedVersion2">
+										<option ng-value="$index"  ng-repeat="version in selectedDependency2.versions">{{version.version}}</option>
+									</select>
+									<button ng-click="onAddDependency2(selectedDependency2.versions[selectedVersion2])">Add Dependency</button>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									Dependencies
+								</td>
+								<td>
+									<select multiple disabled ng-model="dependencies2">
+										<option ng-repeat="addedDependency in dependencies2">{{addedDependency.name}}({{addedDependency.version}})</option>
 									</select>
 								</td>
 							</tr>
@@ -155,7 +219,7 @@
 							</tr>
 						</table>
 					</form>
-					<button ng-click="createPlugin(newPlugin, dependencies); clearForm('#newPluginForm');">Create</button>
+					<button ng-click="createPlugin(newPlugin, newPluginVersion, dependencies2); clearForm('#newPluginForm');">Create</button>
 				</div>
 			</div>
 		</div>

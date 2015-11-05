@@ -17,6 +17,10 @@ public abstract class GenericDao<T, U> {
 		return object;
 	}
 	
+	public T update(T object) {
+		return getEntityManager().merge(object);
+	}
+	
 	public T get(U id) {
 		return getEntityManager().find(getEntityClass(), id);
 	}

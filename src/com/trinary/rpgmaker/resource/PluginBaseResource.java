@@ -15,7 +15,7 @@ import com.trinary.rpgmaker.ro.PluginBaseRO;
 import com.trinary.rpgmaker.ro.PluginRO;
 import com.trinary.rpgmaker.service.PluginBaseService;
 
-@Path("/v1/base/")
+@Path("/v1/base")
 @Produces(MediaType.APPLICATION_JSON)
 public class PluginBaseResource {
 	@Inject

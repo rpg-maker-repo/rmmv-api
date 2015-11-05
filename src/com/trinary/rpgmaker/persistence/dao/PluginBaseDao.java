@@ -39,9 +39,16 @@ public class PluginBaseDao extends GenericDao<PluginBase, Long> {
 		
 		List<Plugin> savedVersions = new ArrayList<Plugin>();
 		for (Plugin version : versions) {
-			version.setBase(base);
-			version = pluginDao.save(version);
-			savedVersions.add(version);
+			if (version.getId() == 0) {
+				version.setBase(base);
+				version = pluginDao.save(version);
+				savedVersions.add(version);
+			} else {
+				version = pluginDao.get(version.getId());
+				version.setBase(base);
+				version = pluginDao.update(version);
+				savedVersions.add(version);
+			}
 		}
 		base.getVersions().addAll(savedVersions);
 		return save(base);

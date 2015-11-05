@@ -26,13 +26,23 @@ app.controller('page-controller', function($scope) {
 	$scope.page = {};
 	$scope.page.view = "view-plugins";
 	$scope.plugins = [];
+	$scope.dependencies1 = [];
+	$scope.dependencies2 = [];
 	
 	$scope.onChangeVersion = function(plugin) {
 		if (!plugin.selectedVersion.dependencies) {
 			plugin.selectedVersion.dependencies = plugin.selectedVersion.getDependencies();
 			plugin.showScript = false;
 		}
-	}
+	};
+	
+	$scope.onAddDependency1 = function(version) {
+		$scope.dependencies1.push(version);
+	};
+	
+	$scope.onAddDependency2 = function(version) {
+		$scope.dependencies2.push(version);
+	};
 	
 	$scope.reloadPluginList = function() {
 		$scope.plugins = RMMV.PluginBase.Web.getPluginBases();
@@ -68,25 +78,60 @@ app.controller('page-controller', function($scope) {
 		$scope.fileContent = $fileContent;
 	};
 	
-	$scope.createPlugin = function(newPlugin, dependencyIds) {
+	$scope.createPlugin = function(base, pluginVersion, dependencies) {
 		// Create the plugin and save it.
-		plugin = RMMV.Plugin.create(newPlugin);
-		plugin.script = $scope.fileContent;
-		if (!plugin.script) {
+		newPlugin = RMMV.PluginBase.create(base);
+		newPluginVersion = RMMV.Plugin.create(pluginVersion);
+		newPluginVersion.script = $scope.fileContent;
+		
+		if (!newPluginVersion.script) {
 			return;
 		}
-		plugin = RMMV.Plugin.Web.createPlugin(plugin);
 		
-		// Add depdencies if there are any.
-		if (dependencyIds) {
-			var dependencies = [];
-			for (var i = 0; i < dependencyIds.length; i++) {
-				var dependency = RMMV.Plugin();
-				dependency.id = dependencyIds[i];
-				dependencies.push(dependency);
+		// Create new plugin and new initial version
+		newPlugin = RMMV.PluginBase.Web.createPluginBase(newPlugin);
+		newPluginVersion = RMMV.Plugin.Web.createPlugin(newPluginVersion);
+		
+		// Add dependencies if there are any.
+		if (dependencies) {
+			var newDependencies = [];
+			for (var i = 0; i < dependencies.length; i++) {
+				var newDependency = RMMV.Plugin.create(dependencies[i]);
+				newDependencies.push(newDependency);
 			}
-			plugin.addDependencies(dependencies);
+			newPluginVersion.addDependencies(newDependencies);
 		}
+		
+		// Add initial version
+		newPlugin.addVersions([newPluginVersion]);
+		
+		// Go back to view-plugins page.
+		$scope.page.view = "view-plugins";
+		$scope.reloadPluginList();
+	};
+	
+	$scope.createPluginVersion = function(base, pluginVersion, dependencies) {
+		// Create the new plugin version.
+		var newPluginVersion = RMMV.Plugin.create(pluginVersion);
+		newPluginVersion.script = $scope.fileContent;
+		if (!newPluginVersion.script) {
+			return;
+		}
+		
+		newPluginVersion = RMMV.Plugin.Web.createPlugin(newPluginVersion);
+		
+		// Add dependencies if there are any.
+		if (dependencies) {
+			var newDependencies = [];
+			for (var i = 0; i < dependencies.length; i++) {
+				var newDependency = RMMV.Plugin.create(dependencies[i]);
+				newDependencies.push(newDependency);
+			}
+			newPluginVersion.addDependencies(newDependencies);
+		}
+		
+		// Add new version to base.
+		base.addVersions([newPluginVersion]);
 		
 		// Go back to view-plugins page.
 		$scope.page.view = "view-plugins";

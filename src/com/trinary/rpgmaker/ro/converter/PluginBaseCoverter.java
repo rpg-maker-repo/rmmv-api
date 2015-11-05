@@ -6,9 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ejb.EJB;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.UriInfo;
-
 import com.trinary.ro.converter.ROConverter;
 import com.trinary.rpgmaker.persistence.entity.PluginBase;
 import com.trinary.rpgmaker.resource.PluginBaseResource;

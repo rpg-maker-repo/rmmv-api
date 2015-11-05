@@ -74,7 +74,7 @@ app.controller('page-controller', function($scope) {
 			plugin.showScript = false;
 		}
 	};
-	$scope.loadScript = function(plugin, $fileContent) {
+	$scope.loadScript = function($fileContent) {
 		$scope.fileContent = $fileContent;
 	};
 	
@@ -105,6 +105,10 @@ app.controller('page-controller', function($scope) {
 		// Add initial version
 		newPlugin.addVersions([newPluginVersion]);
 		
+		// Clear dependencies list
+		$scope.dependencies1 = [];
+		$scope.dependencies2 = [];
+		
 		// Go back to view-plugins page.
 		$scope.page.view = "view-plugins";
 		$scope.reloadPluginList();
@@ -132,6 +136,10 @@ app.controller('page-controller', function($scope) {
 		
 		// Add new version to base.
 		base.addVersions([newPluginVersion]);
+		
+		// Clear dependencies list
+		$scope.dependencies1 = [];
+		$scope.dependencies2 = [];
 		
 		// Go back to view-plugins page.
 		$scope.page.view = "view-plugins";

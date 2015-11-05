@@ -123,7 +123,7 @@
 			<div ng-show="page.view == 'create-plugin'">
 				<h1>Create New Plugin Version</h1>
 				<div class="create-plugin-div">
-					<form id="newPluginForm">
+					<form id="newPluginVersionForm">
 						<table>
 							<tr>
 								<td>Base Plugin</td>
@@ -167,11 +167,11 @@
 							</tr>
 							<tr>
 								<td>File:</td>
-								<td><input type="file" on-read-file="loadScript(newPlugin, $fileContent)"></input></td>
+								<td><input type="file" on-read-file="loadScript($fileContent)"></input></td>
 							</tr>
 						</table>
 					</form>
-					<button ng-click="createPluginVersion(selectedBase, newPluginVersion, dependencies1); clearForm('#newPluginForm');">Create</button>
+					<button ng-click="createPluginVersion(selectedBase, newPluginVersion, dependencies1); clearForm('#newPluginVersionForm');">Create</button>
 				</div>
 				<h1>Create New Plugin</h1>
 				<div class="create-plugin-div">
@@ -187,11 +187,11 @@
 							</tr>
 							<tr>
 								<td>Initial Version</td>
-								<td><input type="text" ng-model="newPluginVersion.version"></input></td>
+								<td><input type="text" ng-model="initialPluginVersion.version"></input></td>
 							</tr>
 							<tr>
 								<td>RPG Maker Version:</td>
-								<td><input type="text" ng-model="newPluginVersion.compatibleRMVersion"></input></td>
+								<td><input type="text" ng-model="initialPluginVersion.compatibleRMVersion"></input></td>
 							</tr>
 							<tr>
 								<td>Add Dependencies</td>
@@ -215,11 +215,11 @@
 							</tr>
 							<tr>
 								<td>File:</td>
-								<td><input type="file" on-read-file="loadScript(newPlugin, $fileContent)"></input></td>
+								<td><input type="file" on-read-file="loadScript($fileContent)"></input></td>
 							</tr>
 						</table>
 					</form>
-					<button ng-click="createPlugin(newPlugin, newPluginVersion, dependencies2); clearForm('#newPluginForm');">Create</button>
+					<button ng-click="createPlugin(newPlugin, initialPluginVersion, dependencies2); clearForm('#newPluginForm');">Create</button>
 				</div>
 			</div>
 		</div>

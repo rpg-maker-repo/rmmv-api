@@ -21,12 +21,6 @@ public class PluginResource {
 	PluginService service;
 	
 	@Path("/")
-	@POST
-	public Response create(PluginRO pluginRo) {
-		return Response.ok(service.save(pluginRo)).build();
-	}
-	
-	@Path("/")
 	@GET
 	public Response getAll() {
 		return Response.ok(service.getAll()).build();

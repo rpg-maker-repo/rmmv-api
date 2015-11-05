@@ -34,23 +34,13 @@ public class PluginBaseDao extends GenericDao<PluginBase, Long> {
 		return new ArrayList<Plugin>(base.getVersions());
 	}
 	
-	public PluginBase addVersions(Long id, List<Plugin> versions) {
+	public Plugin addVersion(Long id, Plugin version) {
 		PluginBase base = get(id);
+		version.setBase(base);
+		version = pluginDao.save(version);
+		base.getVersions().add(version);
+		save(base);
 		
-		List<Plugin> savedVersions = new ArrayList<Plugin>();
-		for (Plugin version : versions) {
-			if (version.getId() == 0) {
-				version.setBase(base);
-				version = pluginDao.save(version);
-				savedVersions.add(version);
-			} else {
-				version = pluginDao.get(version.getId());
-				version.setBase(base);
-				version = pluginDao.update(version);
-				savedVersions.add(version);
-			}
-		}
-		base.getVersions().addAll(savedVersions);
-		return save(base);
+		return version;
 	}
 }

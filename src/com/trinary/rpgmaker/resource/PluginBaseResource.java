@@ -1,7 +1,5 @@
 package com.trinary.rpgmaker.resource;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -45,7 +43,7 @@ public class PluginBaseResource {
 	
 	@POST
 	@Path("/{id}/version")
-	public Response addVersions(@PathParam("id") Long id, List<PluginRO> versions) {
-		return Response.ok(service.addVersions(id, versions)).build();
+	public Response addVersion(@PathParam("id") Long id, PluginRO version) {
+		return Response.ok(service.addVersion(id, version)).build();
 	}
 }

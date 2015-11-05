@@ -24,8 +24,8 @@ RMMV.Types.PluginBase = function() {
 		return RMMV.PluginBase.Web.getVersions(this.id);
 	};
 	
-	plugin.addVersions = function(versions) {
-		return RMMV.PluginBase.Web.addVersions(this.id, versions);
+	plugin.addVersion = function(version) {
+		return RMMV.PluginBase.Web.addVersion(this.id, version);
 	};
 	
 	return plugin;
@@ -119,17 +119,17 @@ RMMV.PluginBase.Web.getVersions = function(id) {
 	return ret;
 }
 
-RMMV.PluginBase.Web.addVersions = function(id, versions) {
+RMMV.PluginBase.Web.addVersion = function(id, version) {
 	var plugin = null;
 	$.ajax({
 		type: "POST",
 		accept: "application/json",
 		contentType: "application/json",
 		url: RMMV.Web.baseUrl + "/v1/base/" + id + "/version",
-		data: JSON.stringify(versions),
+		data: JSON.stringify(version),
 		dataType: "json",
 		success: function(data) {
-			plugin = RMMV.PluginBase.create(data);
+			plugin = RMMV.Plugin.create(data);
 		},
 		async: false
 	});

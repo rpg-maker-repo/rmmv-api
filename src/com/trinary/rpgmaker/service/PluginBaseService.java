@@ -44,8 +44,8 @@ public class PluginBaseService {
 		return pluginConverter.convertEntityList(dao.getVersions(id));
 	}
 	
-	public PluginBaseRO addVersions(Long id, List<PluginRO> versionRoList) {
-		List<Plugin> versions = pluginConverter.convertROList(versionRoList);
-		return pluginBaseConverter.convertEntity(dao.addVersions(id, versions));
+	public PluginRO addVersion(Long id, PluginRO versionRoList) {
+		Plugin version = pluginConverter.convertRO(versionRoList);
+		return pluginConverter.convertEntity(dao.addVersion(id, version));
 	}
 }

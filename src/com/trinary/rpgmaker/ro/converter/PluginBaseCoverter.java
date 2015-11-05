@@ -46,10 +46,10 @@ public class PluginBaseCoverter extends ROConverter<PluginBaseRO, PluginBase> {
 			Class<?> resource = PluginBaseResource.class;
 			Method get = resource.getMethod("get", Long.class);
 			Method getVersions = resource.getMethod("getVersions", Long.class);
-			Method addVersions = resource.getMethod("addVersions", Long.class, List.class);
+			Method addVersion = resource.getMethod("addVersion", Long.class, List.class);
 			object.addLink(generator.createLink(get, args).setRel("self"));
 			object.addLink(generator.createLink(getVersions, args).setRel("get-versions"));
-			object.addLink(generator.createLink(addVersions, args).setRel("add-versions"));
+			object.addLink(generator.createLink(addVersion, args).setRel("add-versions"));
 		} catch (NoSuchMethodException e) {
 			e.printStackTrace();
 			return null;

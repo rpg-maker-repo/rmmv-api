@@ -90,7 +90,7 @@ app.controller('page-controller', function($scope) {
 		
 		// Create new plugin and new initial version
 		newPlugin = RMMV.PluginBase.Web.createPluginBase(newPlugin);
-		newPluginVersion = RMMV.Plugin.Web.createPlugin(newPluginVersion);
+		newPluginVersion = newPlugin.addVersion(newPluginVersion);
 		
 		// Add dependencies if there are any.
 		if (dependencies) {
@@ -101,9 +101,6 @@ app.controller('page-controller', function($scope) {
 			}
 			newPluginVersion.addDependencies(newDependencies);
 		}
-		
-		// Add initial version
-		newPlugin.addVersions([newPluginVersion]);
 		
 		// Clear dependencies list
 		$scope.dependencies1 = [];
@@ -117,12 +114,13 @@ app.controller('page-controller', function($scope) {
 	$scope.createPluginVersion = function(base, pluginVersion, dependencies) {
 		// Create the new plugin version.
 		var newPluginVersion = RMMV.Plugin.create(pluginVersion);
+		var pluginBase = RMMV.PluginBase.create(base);
 		newPluginVersion.script = $scope.fileContent;
 		if (!newPluginVersion.script) {
 			return;
 		}
 		
-		newPluginVersion = RMMV.Plugin.Web.createPlugin(newPluginVersion);
+		newPluginVersion = pluginBase.addVersion(newPluginVersion);
 		
 		// Add dependencies if there are any.
 		if (dependencies) {
@@ -133,9 +131,6 @@ app.controller('page-controller', function($scope) {
 			}
 			newPluginVersion.addDependencies(newDependencies);
 		}
-		
-		// Add new version to base.
-		base.addVersions([newPluginVersion]);
 		
 		// Clear dependencies list
 		$scope.dependencies1 = [];

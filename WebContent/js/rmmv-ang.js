@@ -27,17 +27,35 @@ app.controller('page-controller', function($scope) {
 	$scope.page.view = "view-plugins";
 	$scope.plugins = [];
 	
+	$scope.onChangeVersion = function(plugin) {
+		if (!plugin.selectedVersion.dependencies) {
+			plugin.selectedVersion.dependencies = plugin.selectedVersion.getDependencies();
+			plugin.showScript = false;
+		}
+	}
+	
 	$scope.reloadPluginList = function() {
-		$scope.plugins = RMMV.Web.getPlugins();
+		$scope.plugins = RMMV.PluginBase.Web.getPluginBases();
 		for (var i = 0; i < $scope.plugins.length; i++) {
 			var plugin = $scope.plugins[i];
-			plugin.dependencies = plugin.getDependencies();
+			plugin.versions = plugin.getVersions();
+			if (plugin.versions && plugin.versions.length > 0) {
+				var latest = plugin.versions.length - 1;
+				plugin.latestVersion = plugin.versions[latest];
+				plugin.selectedVersion = plugin.latestVersion;
+				plugin.selectedVersion.dependencies = plugin.selectedVersion.getDependencies();
+			}
 		}
 	};
 
 	$scope.toggleScript = function(plugin) {
+		if (!plugin.selectedVersion) {
+			plugin.showScript = false;
+			return;
+		}
+		
 		if (!plugin.script) {
-			plugin.script = plugin.getScript();
+			plugin.script = plugin.selectedVersion.getScript();
 		}
 		
 		if (!plugin.showScript) {
@@ -57,7 +75,7 @@ app.controller('page-controller', function($scope) {
 		if (!plugin.script) {
 			return;
 		}
-		plugin = RMMV.Web.createPlugin(plugin);
+		plugin = RMMV.Plugin.Web.createPlugin(plugin);
 		
 		// Add depdencies if there are any.
 		if (dependencyIds) {

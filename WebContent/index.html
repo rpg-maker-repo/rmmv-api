@@ -89,11 +89,13 @@
 							</tr>
 							<tr>
 								<td>Version:</td>
-								<td>{{plugin.version}}</td>
+								<td>
+									<select ng-options="v.version for v in plugin.versions" ng-model="plugin.selectedVersion" ng-change="onChangeVersion(plugin);"></select>
+								</td>
 							</tr>
 							<tr>
 								<td>RPG Maker Version:</td>
-								<td>{{plugin.compatibleRMVersion}}</td>
+								<td>{{plugin.selectedVersion.compatibleRMVersion}}</td>
 							</tr>
 							<tr>
 								<td style="vertical-align: top;"><button ng-click="toggleScript(plugin)">Show Script</button></td>
@@ -106,7 +108,7 @@
 						</table>
 						<div id="plugin-{{plugin.id}}-deps" class="plugin-deps">
 							<h3 ng-show="plugin.dependencies.length > 0">Dependencies</h3>
-							<div id="dep-{{dep.id}}" class="dependency" ng-repeat="dep in plugin.dependencies">
+							<div id="dep-{{dep.id}}" class="dependency" ng-repeat="dep in plugin.selectedVersion.dependencies">
 								<h3>{{dep.name}}</h3>
 								<table class="dependency-table indented">
 									<tr><td>Description:</td><td>{{dep.description}}</td></tr>

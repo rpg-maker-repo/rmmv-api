@@ -1,9 +1,145 @@
 var RMMV = RMMV || {};
+RMMV.Types = {};
+RMMV.PluginBase = {};
+RMMV.Plugin = {};
+RMMV.PluginBase.Web = {};
+RMMV.Plugin.Web = {};
 RMMV.Web = {};
-
 RMMV.Web.baseUrl = "http://localhost:8080/rmmv-api";
 
-RMMV.Plugin = function() {
+// Plugin Base
+
+RMMV.Types.PluginBase = function() {
+	var plugin = {};
+	plugin.id = null;
+	plugin.dateCreated = null;
+	plugin.name = null;
+	plugin.description = null;
+	
+	plugin.refreshObject = function() {
+		return RMMV.PluginBase.Web.getBasePlugin(this.id);
+	};
+	
+	plugin.getVersions = function() {
+		return RMMV.PluginBase.Web.getVersions(this.id);
+	};
+	
+	plugin.addVersions = function(versions) {
+		return RMMV.PluginBase.Web.addVersions(this.id, versions);
+	};
+	
+	return plugin;
+};
+
+RMMV.PluginBase.create = function(oplugin) {
+	var plugin = RMMV.Types.PluginBase();
+	plugin.id = oplugin.id;
+	plugin.dateCreated = oplugin.dateCreated;
+	plugin.name = oplugin.name;
+	plugin.description = oplugin.description;
+	
+	return plugin;
+};
+
+RMMV.PluginBase.createArray = function(oplugins) {
+	var plugins = [];
+	for (var i = 0; i < oplugins.length; i++) {
+		var oplugin = oplugins[i];
+		var plugin = RMMV.Types.PluginBase();
+		plugin.id = oplugin.id;
+		plugin.dateCreated = oplugin.dateCreated;
+		plugin.name = oplugin.name;
+		plugin.description = oplugin.description;
+		plugins.push(plugin);
+	}
+	
+	return plugins;
+};
+
+RMMV.PluginBase.Web.createPluginBase = function(plugin) {
+	var saved = RMMV.Types.PluginBase();
+	$.ajax({
+		type: "POST",
+		accept: "application/json",
+		contentType: "application/json",
+		url: RMMV.Web.baseUrl + "/v1/base",
+		data: JSON.stringify(plugin),
+		dataType: "json",
+		success: function(data) {
+			saved = RMMV.PluginBase.create(data);
+		},
+		async: false
+	});
+	
+	return saved;
+};
+
+RMMV.PluginBase.Web.getPluginBase = function(id) {
+	var ret = RMMV.Types.PluginBase();
+	$.ajax({
+		type: "GET",
+		accept: "application/json",
+		url: RMMV.Web.baseUrl + "/v1/base/" + id,
+		success: function(data) {
+			ret = RMMV.PluginBase.createBase(data);
+		},
+		async: false
+	});
+	
+	return ret;
+}
+
+RMMV.PluginBase.Web.getPluginBases = function() {
+	var ret = null;
+	$.ajax({
+		type: "GET",
+		accept: "application/json",
+		url: RMMV.Web.baseUrl + "/v1/base",
+		success: function(data) {
+			ret = RMMV.PluginBase.createArray(data);
+		},
+		async: false
+	});
+	
+	return ret;
+}
+
+RMMV.PluginBase.Web.getVersions = function(id) {
+	var ret = null;
+	$.ajax({
+		type: "GET",
+		accept: "application/json",
+		url: RMMV.Web.baseUrl + "/v1/base/" + id + "/version",
+		success: function(data) {
+			ret = RMMV.Plugin.createArray(data);
+		},
+		async: false
+	});
+	
+	return ret;
+}
+
+RMMV.PluginBase.Web.addVersions = function(id, versions) {
+	var plugin = null;
+	$.ajax({
+		type: "POST",
+		accept: "application/json",
+		contentType: "application/json",
+		url: RMMV.Web.baseUrl + "/v1/base/" + id + "/version",
+		data: JSON.stringify(versions),
+		dataType: "json",
+		success: function(data) {
+			plugin = RMMV.PluginBase.create(data);
+		},
+		async: false
+	});
+	
+	return plugin;
+};
+
+// Plugin
+
+RMMV.Types.Plugin = function() {
 	var plugin = {};
 	plugin.id = null;
 	plugin.dateCreated = null;
@@ -15,26 +151,26 @@ RMMV.Plugin = function() {
 	plugin.script = null;
 	
 	plugin.refreshObject = function() {
-		return RMMV.Web.getPlugin(this.id);
+		return RMMV.Plugin.Web.getPlugin(this.id);
 	};
 	
 	plugin.getScript = function() {
-		return RMMV.Web.getPluginScript(this.id);
+		return RMMV.Plugin.Web.getPluginScript(this.id);
 	};
 	
 	plugin.getDependencies = function() {
-		return RMMV.Web.getDependencies(this.id);
+		return RMMV.Plugin.Web.getDependencies(this.id);
 	};
 	
 	plugin.addDependencies = function(dependencies) {
-		return RMMV.Web.addDependencies(this.id, dependencies);
+		return RMMV.Plugin.Web.addDependencies(this.id, dependencies);
 	};
 	
 	return plugin;
-}
+};
 
 RMMV.Plugin.create = function(oplugin) {
-	var plugin = RMMV.Plugin();
+	var plugin = RMMV.Types.Plugin();
 	plugin.id = oplugin.id;
 	plugin.dateCreated = oplugin.dateCreated;
 	plugin.name = oplugin.name;
@@ -45,13 +181,13 @@ RMMV.Plugin.create = function(oplugin) {
 	plugin.script = oplugin.script;
 	
 	return plugin;
-}
+};
 
 RMMV.Plugin.createArray = function(oplugins) {
 	var plugins = [];
 	for (var i = 0; i < oplugins.length; i++) {
 		var oplugin = oplugins[i];
-		var plugin = RMMV.Plugin();
+		var plugin = RMMV.Types.Plugin();
 		plugin.id = oplugin.id;
 		plugin.dateCreated = oplugin.dateCreated;
 		plugin.name = oplugin.name;
@@ -64,10 +200,10 @@ RMMV.Plugin.createArray = function(oplugins) {
 	}
 	
 	return plugins;
-}
+};
 
-RMMV.Web.createPlugin = function(plugin) {
-	var saved = RMMV.Plugin();
+RMMV.Plugin.Web.createPlugin = function(plugin) {
+	var saved = RMMV.Types.Plugin();
 	$.ajax({
 		type: "POST",
 		accept: "application/json",
@@ -84,8 +220,8 @@ RMMV.Web.createPlugin = function(plugin) {
 	return saved;
 };
 
-RMMV.Web.getPlugin = function(id) {
-	var ret = RMMV.Plugin();
+RMMV.Plugin.Web.getPlugin = function(id) {
+	var ret = null
 	$.ajax({
 		type: "GET",
 		accept: "application/json",
@@ -99,7 +235,7 @@ RMMV.Web.getPlugin = function(id) {
 	return ret;
 };
 
-RMMV.Web.getPlugins = function() {
+RMMV.Plugin.Web.getPlugins = function() {
 	var ret = null;
 	$.ajax({
 		type: "GET",
@@ -114,7 +250,7 @@ RMMV.Web.getPlugins = function() {
 	return ret;
 };
 
-RMMV.Web.getPluginScript = function(id) {
+RMMV.Plugin.Web.getPluginScript = function(id) {
 	var script = $.ajax({
 		type: "GET",
 		accept: "text/plain",
@@ -128,7 +264,7 @@ RMMV.Web.getPluginScript = function(id) {
 	return script;
 };
 
-RMMV.Web.getDependencies = function(id) {
+RMMV.Plugin.Web.getDependencies = function(id) {
 	var dependencies = null;
 	$.ajax({
 		type: "GET",
@@ -143,7 +279,7 @@ RMMV.Web.getDependencies = function(id) {
 	return dependencies;
 };
 
-RMMV.Web.addDependencies = function(id, dependencies) {
+RMMV.Plugin.Web.addDependencies = function(id, dependencies) {
 	var plugin = null;
 	$.ajax({
 		type: "POST",

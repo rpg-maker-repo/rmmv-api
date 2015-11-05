@@ -25,8 +25,6 @@ public class PluginConverter extends ROConverter<PluginRO, Plugin> {
 		Plugin entity = new Plugin();
 		
 		entity.setId(ro.getId());
-		entity.setName(ro.getName());
-		entity.setDescription(ro.getDescription());
 		entity.setVersion(ro.getVersion());
 		entity.setCompatibleRMVersion(ro.getCompatibleRMVersion());
 		entity.setHash(ro.getHash());
@@ -43,8 +41,8 @@ public class PluginConverter extends ROConverter<PluginRO, Plugin> {
 		PluginRO ro = new PluginRO();
 		
 		ro.setId(entity.getId());
-		ro.setName(entity.getName());
-		ro.setDescription(entity.getDescription());
+		ro.setName(entity.getBase().getName());
+		ro.setDescription(entity.getBase().getDescription());
 		ro.setVersion(entity.getVersion());
 		ro.setCompatibleRMVersion(entity.getCompatibleRMVersion());
 		ro.setHash(entity.getHash());

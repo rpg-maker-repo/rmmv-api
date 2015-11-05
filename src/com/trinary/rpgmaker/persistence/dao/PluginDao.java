@@ -6,27 +6,22 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 
 import com.trinary.rpgmaker.persistence.entity.Plugin;
 
 @Stateless
-public class PluginDao {
+public class PluginDao extends GenericDao<Plugin, Long> {
 	@PersistenceContext
 	EntityManager em;
 	
-	public Plugin save(Plugin plugin) {
-		em.persist(plugin);
-		return plugin;
+	@Override
+	public EntityManager getEntityManager() {
+		return em;
 	}
-	
-	public Plugin get(Long id) {
-		return em.find(Plugin.class, id);
-	}
-	
-	public List<Plugin> getAll() {
-		TypedQuery<Plugin> query = em.createQuery("FROM Plugin p", Plugin.class);
-		return query.getResultList();
+
+	@Override
+	public Class<Plugin> getEntityClass() {
+		return Plugin.class;
 	}
 	
 	public Plugin addDependencies(Long id, List<Plugin> dependencies) {

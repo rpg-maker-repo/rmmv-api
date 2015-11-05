@@ -9,7 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Plugin {
@@ -19,12 +19,6 @@ public class Plugin {
 	
 	@Column
 	Date dateCreated;
-	
-	@Column
-	String name;
-	
-	@Column
-	String description;
 	
 	@Column
 	String version;
@@ -45,8 +39,8 @@ public class Plugin {
 	@ManyToMany(mappedBy="dependencies")
 	List<Plugin> dependedOnBy;
 	
-	@OneToMany
-	List<Tag> tags;
+	@ManyToOne
+	PluginBase base;
 
 	/**
 	 * @return the id
@@ -74,20 +68,6 @@ public class Plugin {
 	 */
 	public void setDateCreated(Date dateCreated) {
 		this.dateCreated = dateCreated;
-	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	/**
@@ -175,32 +155,16 @@ public class Plugin {
 	}
 
 	/**
-	 * @return the tags
+	 * @return the base
 	 */
-	public List<Tag> getTags() {
-		return tags;
+	public PluginBase getBase() {
+		return base;
 	}
 
 	/**
-	 * @param tags the tags to set
+	 * @param base the base to set
 	 */
-	public void setTags(List<Tag> tags) {
-		this.tags = tags;
+	public void setBase(PluginBase base) {
+		this.base = base;
 	}
-
-	/**
-	 * @return the description
-	 */
-	public String getDescription() {
-		return description;
-	}
-
-	/**
-	 * @param description the description to set
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	
-	
 }

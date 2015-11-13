@@ -8,6 +8,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -22,8 +23,12 @@ public class PluginResource {
 	
 	@Path("/")
 	@GET
-	public Response getAll() {
-		return Response.ok(service.getAll()).build();
+	public Response getAll(@QueryParam("hash") String hash) {
+		if (hash == null) {
+			return Response.ok(service.getAll()).build();
+		}
+		
+		return Response.ok(service.getAllWithHash(hash)).build();
 	}
 	
 	@Path("/{id}")
@@ -37,6 +42,12 @@ public class PluginResource {
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response getScript(@PathParam("id") Long id) {
 		return Response.ok(service.getScript(id)).build();
+	}
+	
+	@Path("/{id}/base")
+	@GET
+	public Response getBase(@PathParam("id") Long id) {
+		return Response.ok(service.getBase(id)).build();
 	}
 	
 	@Path("/{id}/dependency")

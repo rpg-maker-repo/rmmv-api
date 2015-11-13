@@ -1,5 +1,7 @@
 package com.trinary.rpgmaker.service;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.List;
 
@@ -7,18 +9,20 @@ import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
+import org.apache.commons.codec.binary.Base64;
+
 import com.trinary.rpgmaker.persistence.dao.PluginBaseDao;
 import com.trinary.rpgmaker.persistence.entity.Plugin;
 import com.trinary.rpgmaker.persistence.entity.PluginBase;
 import com.trinary.rpgmaker.ro.PluginBaseRO;
 import com.trinary.rpgmaker.ro.PluginRO;
-import com.trinary.rpgmaker.ro.converter.PluginBaseCoverter;
+import com.trinary.rpgmaker.ro.converter.PluginBaseConverter;
 import com.trinary.rpgmaker.ro.converter.PluginConverter;
 
 @RequestScoped
 public class PluginBaseService {
 	@Inject
-	PluginBaseCoverter pluginBaseConverter;
+	PluginBaseConverter pluginBaseConverter;
 	@Inject
 	PluginConverter pluginConverter;
 	
@@ -44,8 +48,24 @@ public class PluginBaseService {
 		return pluginConverter.convertEntityList(dao.getVersions(id));
 	}
 	
-	public PluginRO addVersion(Long id, PluginRO versionRoList) {
-		Plugin version = pluginConverter.convertRO(versionRoList);
+	public PluginRO addVersion(Long id, PluginRO versionRo) {
+		// Set timestamp
+		versionRo.setDateCreated(new Date());
+		
+		// Find hash
+		MessageDigest md;
+		if (versionRo.getScript() != null) {
+			try {
+				md = MessageDigest.getInstance("MD5");
+				md.update(versionRo.getScript().getBytes());
+				String digest = Base64.encodeBase64String(md.digest());
+				versionRo.setHash(digest);
+			} catch (NoSuchAlgorithmException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		Plugin version = pluginConverter.convertRO(versionRo);
 		return pluginConverter.convertEntity(dao.addVersion(id, version));
 	}
 }

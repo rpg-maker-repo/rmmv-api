@@ -74,6 +74,7 @@ app.controller('page-controller', function($scope) {
 			plugin.showScript = false;
 		}
 	};
+	
 	$scope.loadScript = function($fileContent) {
 		$scope.fileContent = $fileContent;
 	};

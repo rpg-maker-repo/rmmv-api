@@ -6,8 +6,10 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 import com.trinary.rpgmaker.persistence.entity.Plugin;
+import com.trinary.rpgmaker.persistence.entity.PluginBase;
 
 @Stateless
 public class PluginDao extends GenericDao<Plugin, Long> {
@@ -55,5 +57,16 @@ public class PluginDao extends GenericDao<Plugin, Long> {
 	
 	public Plugin search() {
 		return null;
+	}
+
+	public PluginBase getBase(Long id) {
+		Plugin plugin = get(id);
+		return plugin.getBase();
+	}
+
+	public List<Plugin> getAllWithHash(String hash) {
+		TypedQuery<Plugin> query = this.getEntityManager().createQuery("SELECT p FROM Plugin p WHERE p.hash=:hash", Plugin.class);
+		query.setParameter("hash", hash);
+		return query.getResultList();
 	}
 }

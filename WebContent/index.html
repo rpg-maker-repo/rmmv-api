@@ -160,9 +160,9 @@
 							<tr>
 								<td>Dependencies</td>
 								<td>
-									<select multiple disabled ng-model="dependencies1">
-										<option ng-repeat="addedDependency in dependencies1">{{addedDependency.name}}({{addedDependency.version}})</option>
-									</select>
+									<ul>
+										<li ng-repeat="addedDependency in dependencies1">{{addedDependency.name}}({{addedDependency.version}})<button>Remove</button></li>
+									</ul>
 								</td>
 							</tr>
 							<tr>
@@ -208,9 +208,9 @@
 									Dependencies
 								</td>
 								<td>
-									<select multiple disabled ng-model="dependencies2">
-										<option ng-repeat="addedDependency in dependencies2">{{addedDependency.name}}({{addedDependency.version}})</option>
-									</select>
+									<ul>
+										<li ng-repeat="addedDependency in dependencies2">{{addedDependency.name}}({{addedDependency.version}})<button>Remove</button></li>
+									</ul>
 								</td>
 							</tr>
 							<tr>

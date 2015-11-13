@@ -202,24 +202,6 @@ RMMV.Plugin.createArray = function(oplugins) {
 	return plugins;
 };
 
-RMMV.Plugin.Web.createPlugin = function(plugin) {
-	var saved = RMMV.Types.Plugin();
-	$.ajax({
-		type: "POST",
-		accept: "application/json",
-		contentType: "application/json",
-		url: RMMV.Web.baseUrl + "/v1/plugin",
-		data: JSON.stringify(plugin),
-		dataType: "json",
-		success: function(data) {
-			saved = RMMV.Plugin.create(data);
-		},
-		async: false
-	});
-	
-	return saved;
-};
-
 RMMV.Plugin.Web.getPlugin = function(id) {
 	var ret = null
 	$.ajax({

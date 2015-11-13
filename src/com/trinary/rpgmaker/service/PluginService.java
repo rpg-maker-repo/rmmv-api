@@ -2,7 +2,9 @@ package com.trinary.rpgmaker.service;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
 import org.apache.commons.codec.binary.Base64;
+
 import java.util.Date;
 import java.util.List;
 
@@ -12,13 +14,16 @@ import javax.inject.Inject;
 
 import com.trinary.rpgmaker.persistence.dao.PluginDao;
 import com.trinary.rpgmaker.persistence.entity.Plugin;
+import com.trinary.rpgmaker.ro.PluginBaseRO;
 import com.trinary.rpgmaker.ro.PluginRO;
+import com.trinary.rpgmaker.ro.converter.PluginBaseConverter;
 import com.trinary.rpgmaker.ro.converter.PluginConverter;
 
 @RequestScoped
 public class PluginService {
 	@EJB PluginDao dao;
 	@Inject PluginConverter converter;
+	@Inject PluginBaseConverter baseConverter;
 	
 	public PluginRO save(PluginRO pluginRo) {
 		// Set timestamp
@@ -62,5 +67,13 @@ public class PluginService {
 	
 	public List<PluginRO> getDependencies(Long id) {
 		return converter.convertEntityList(dao.getDependencies(id));
+	}
+
+	public PluginBaseRO getBase(Long id) {
+		return baseConverter.convertEntity(dao.getBase(id));
+	}
+
+	public List<PluginRO> getAllWithHash(String hash) {
+		return converter.convertEntityList(dao.getAllWithHash(hash));
 	}
 }

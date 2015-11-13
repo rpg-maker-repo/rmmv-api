@@ -26,8 +26,16 @@ app.controller('page-controller', function($scope) {
 	$scope.page = {};
 	$scope.page.view = "view-plugins";
 	$scope.plugins = [];
-	$scope.dependencies1 = [];
-	$scope.dependencies2 = [];
+	$scope.newPluginVersion = {};
+	$scope.newPluginVersion.dependencies = [];
+	$scope.newPlugin = {};
+	$scope.newPlugin.dependencies = [];
+	
+	$scope.onChangeBase = function(base, newPluginVersion) {
+		$scope.newPluginVersion.dependencies = base.latestVersion.getDependencies();
+		$scope.newPluginVersion.version = base.latestVersion.version;
+		$scope.newPluginVersion.compatibleRMVersion = base.latestVersion.compatibleRMVersion;
+	};
 	
 	$scope.onChangeVersion = function(plugin) {
 		if (!plugin.selectedVersion.dependencies) {
@@ -37,11 +45,11 @@ app.controller('page-controller', function($scope) {
 	};
 	
 	$scope.onAddDependency1 = function(version) {
-		$scope.dependencies1.push(version);
+		$scope.newPluginVersion.dependencies.push(version);
 	};
 	
 	$scope.onAddDependency2 = function(version) {
-		$scope.dependencies2.push(version);
+		$scope.newPlugin.dependencies.push(version);
 	};
 	
 	$scope.reloadPluginList = function() {
@@ -104,8 +112,8 @@ app.controller('page-controller', function($scope) {
 		}
 		
 		// Clear dependencies list
-		$scope.dependencies1 = [];
-		$scope.dependencies2 = [];
+		$scope.newPluginVersion.dependencies = [];
+		$scope.newPlugin.dependencies = [];
 		
 		// Go back to view-plugins page.
 		$scope.page.view = "view-plugins";
@@ -134,8 +142,8 @@ app.controller('page-controller', function($scope) {
 		}
 		
 		// Clear dependencies list
-		$scope.dependencies1 = [];
-		$scope.dependencies2 = [];
+		$scope.newPluginVersion.dependencies = [];
+		$scope.newPlugin.dependencies = [];
 		
 		// Go back to view-plugins page.
 		$scope.page.view = "view-plugins";

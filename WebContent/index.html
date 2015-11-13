@@ -128,7 +128,7 @@
 							<tr>
 								<td>Base Plugin</td>
 								<td>
-									<select ng-options="p.name for p in plugins" ng-model="selectedBase"></select>
+									<select ng-options="p.name for p in plugins" ng-model="selectedBase" ng-change="onChangeBase(selectedBase);"></select>
 								</td>
 							</tr>
 							<tr>
@@ -161,7 +161,7 @@
 								<td>Dependencies</td>
 								<td>
 									<ul>
-										<li ng-repeat="addedDependency in dependencies1">{{addedDependency.name}}({{addedDependency.version}})<button>Remove</button></li>
+										<li ng-repeat="addedDependency in newPluginVersion.dependencies">{{addedDependency.name}}({{addedDependency.version}})<button>Remove</button></li>
 									</ul>
 								</td>
 							</tr>
@@ -171,7 +171,7 @@
 							</tr>
 						</table>
 					</form>
-					<button ng-click="createPluginVersion(selectedBase, newPluginVersion, dependencies1); clearForm('#newPluginVersionForm');">Create</button>
+					<button ng-click="createPluginVersion(selectedBase, newPluginVersion, newPluginVersion.dependencies); clearForm('#newPluginVersionForm');">Create</button>
 				</div>
 				<h1>Create New Plugin</h1>
 				<div class="create-plugin-div">
@@ -209,7 +209,7 @@
 								</td>
 								<td>
 									<ul>
-										<li ng-repeat="addedDependency in dependencies2">{{addedDependency.name}}({{addedDependency.version}})<button>Remove</button></li>
+										<li ng-repeat="addedDependency in newPlugin.dependencies">{{addedDependency.name}}({{addedDependency.version}})<button>Remove</button></li>
 									</ul>
 								</td>
 							</tr>
@@ -219,7 +219,7 @@
 							</tr>
 						</table>
 					</form>
-					<button ng-click="createPlugin(newPlugin, initialPluginVersion, dependencies2); clearForm('#newPluginForm');">Create</button>
+					<button ng-click="createPlugin(newPlugin, initialPluginVersion, newPlugin.dependencies); clearForm('#newPluginForm');">Create</button>
 				</div>
 			</div>
 		</div>

@@ -28,8 +28,12 @@ app.controller('page-controller', function($scope) {
 	$scope.plugins = [];
 	$scope.newPluginVersion = {};
 	$scope.newPluginVersion.dependencies = [];
+	$scope.newPluginVersion.selectedDependency = {};
+	$scope.newPluginVersion.selectedVersion = "";
 	$scope.newPlugin = {};
 	$scope.newPlugin.dependencies = [];
+	$scope.newPlugin.selectedDependency = {};
+	$scope.newPlugin.selectedVersion = "";
 	
 	$scope.onChangeBase = function(base, newPluginVersion) {
 		$scope.newPluginVersion.dependencies = base.latestVersion.getDependencies();
@@ -44,14 +48,14 @@ app.controller('page-controller', function($scope) {
 		}
 	};
 	
-	$scope.onAddDependency1 = function(version) {
-		$scope.newPluginVersion.dependencies.push(version);
-	};
+	$scope.removeDependency = function(version, dependency) {
+		
+	}
 	
-	$scope.onAddDependency2 = function(version) {
-		$scope.newPlugin.dependencies.push(version);
+	$scope.onAddDependency = function(plugin, dependency) {
+		plugin.dependencies.push(dependency);
 	};
-	
+
 	$scope.reloadPluginList = function() {
 		$scope.plugins = RMMV.PluginBase.Web.getPluginBases();
 		for (var i = 0; i < $scope.plugins.length; i++) {

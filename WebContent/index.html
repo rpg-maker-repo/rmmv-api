@@ -150,18 +150,18 @@
 							<tr>
 								<td>Add Dependencies</td>
 								<td>
-									<select id="create-plugin-dep" ng-options="d.name for d in plugins" ng-model="selectedDependency1" ng-change="onDependencyChange();"></select>
-									<select id="create-plugin-dep-version" ng-model="selectedVersion1">
-										<option ng-value="$index" ng-repeat="version in selectedDependency1.versions">{{version.version}}</option>
+									<select id="create-plugin-dep" ng-options="d.name for d in plugins" ng-model="newPluginVersion.selectedDependency" ng-change="onDependencyChange();"></select>
+									<select id="create-plugin-dep-version" ng-model="newPluginVersion.selectedVersion">
+										<option ng-value="$index" ng-repeat="version in newPluginVersion.selectedDependency.versions">{{version.version}}</option>
 									</select>
-									<button ng-click="onAddDependency1(selectedDependency1.versions[selectedVersion1])">Add Dependency</button>
+									<button ng-click="onAddDependency(newPluginVersion, newPluginVersion.selectedDependency.versions[newPluginVersion.selectedVersion])">Add Dependency</button>
 								</td>
 							</tr>
 							<tr>
 								<td>Dependencies</td>
 								<td>
 									<ul>
-										<li ng-repeat="addedDependency in newPluginVersion.dependencies">{{addedDependency.name}}({{addedDependency.version}})<button>Remove</button></li>
+										<li ng-repeat="addedDependency in newPluginVersion.dependencies">{{addedDependency.name}}({{addedDependency.version}})<button ng-click="removeDependency(newPluginVersion, addedDependency);">Remove</button></li>
 									</ul>
 								</td>
 							</tr>
@@ -196,11 +196,11 @@
 							<tr>
 								<td>Add Dependencies</td>
 								<td>
-									<select id="create-plugin-dep" ng-options="d.name for d in plugins" ng-model="selectedDependency2" ng-change="onDependencyChange();"></select>
-									<select id="create-plugin-dep-version" ng-model="selectedVersion2">
-										<option ng-value="$index"  ng-repeat="version in selectedDependency2.versions">{{version.version}}</option>
+									<select id="create-plugin-dep" ng-options="d.name for d in plugins" ng-model="newPlugin.selectedDependency" ng-change="onDependencyChange();"></select>
+									<select id="create-plugin-dep-version" ng-model="newPlugin.selectedVersion">
+										<option ng-value="$index"  ng-repeat="version in newPlugin.selectedDependency.versions">{{version.version}}</option>
 									</select>
-									<button ng-click="onAddDependency2(selectedDependency2.versions[selectedVersion2])">Add Dependency</button>
+									<button ng-click="onAddDependency(newPlugin, newPlugin.selectedDependency.versions[newPlugin.selectedVersion])">Add Dependency</button>
 								</td>
 							</tr>
 							<tr>
@@ -209,7 +209,7 @@
 								</td>
 								<td>
 									<ul>
-										<li ng-repeat="addedDependency in newPlugin.dependencies">{{addedDependency.name}}({{addedDependency.version}})<button>Remove</button></li>
+										<li ng-repeat="addedDependency in newPlugin.dependencies">{{addedDependency.name}}({{addedDependency.version}})<button ng-click="removeDependency(newPluginVersion, addedDependency);">Remove</button></li>
 									</ul>
 								</td>
 							</tr>

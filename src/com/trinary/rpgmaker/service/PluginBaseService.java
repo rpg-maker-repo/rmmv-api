@@ -2,6 +2,7 @@ package com.trinary.rpgmaker.service;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -67,5 +68,13 @@ public class PluginBaseService {
 		
 		Plugin version = pluginConverter.convertRO(versionRo);
 		return pluginConverter.convertEntity(dao.addVersion(id, version));
+	}
+
+	public List<PluginRO> getLatestVersions(Long id) {
+		List<PluginRO> versions = getVersions(id);
+		List<PluginRO> latestVersion = new ArrayList<PluginRO>();
+		latestVersion.add(versions.get(versions.size() - 1));
+		
+		return latestVersion;
 	}
 }

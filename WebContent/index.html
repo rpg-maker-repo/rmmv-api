@@ -100,9 +100,7 @@
 							<tr>
 								<td style="vertical-align: top;"><button ng-click="toggleScript(plugin)">Show Script</button></td>
 								<td>
-									<div class="plugin-script" ng-show="plugin.showScript">
-										{{plugin.script}}
-									</div>
+									<div class="plugin-script" ng-show="plugin.showScript">{{plugin.script}}</div>
 								</td>
 							</tr>
 						</table>
@@ -167,7 +165,7 @@
 							</tr>
 							<tr>
 								<td>File:</td>
-								<td><input type="file" on-read-file="loadScript($fileContent)"></input></td>
+								<td><input type="file" onChange="angular.element(this).scope().fileNameChanged(this);" on-read-file="loadScript($fileContent)"></input></td>
 							</tr>
 						</table>
 					</form>
@@ -209,13 +207,13 @@
 								</td>
 								<td>
 									<ul>
-										<li ng-repeat="addedDependency in newPlugin.dependencies">{{addedDependency.name}}({{addedDependency.version}})<button ng-click="removeDependency(newPluginVersion, addedDependency);">Remove</button></li>
+										<li ng-repeat="addedDependency in newPlugin.dependencies">{{addedDependency.name}}({{addedDependency.version}})<button ng-click="removeDependency(newPlugin, addedDependency);">Remove</button></li>
 									</ul>
 								</td>
 							</tr>
 							<tr>
 								<td>File:</td>
-								<td><input type="file" on-read-file="loadScript($fileContent)"></input></td>
+								<td><input type="file" onChange="angular.element(this).scope().fileNameChanged(this);" on-read-file="loadScript($fileContent)"></input></td>
 							</tr>
 						</table>
 					</form>

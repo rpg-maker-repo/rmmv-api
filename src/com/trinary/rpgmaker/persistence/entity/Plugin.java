@@ -30,6 +30,9 @@ public class Plugin {
 	String hash;
 	
 	@Column
+	String filename;
+	
+	@Column
 	@Lob
 	String script;
 	
@@ -166,5 +169,19 @@ public class Plugin {
 	 */
 	public void setBase(PluginBase base) {
 		this.base = base;
+	}
+
+	/**
+	 * @return the filename
+	 */
+	public String getFilename() {
+		return filename;
+	}
+
+	/**
+	 * @param filename the filename to set
+	 */
+	public void setFilename(String filename) {
+		this.filename = filename;
 	}
 }

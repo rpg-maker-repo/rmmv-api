@@ -149,6 +149,7 @@ RMMV.Types.Plugin = function() {
 	plugin.compatibleRMVersion = null;
 	plugin.hash = null;
 	plugin.script = null;
+	plugin.filename = null;
 	
 	plugin.refreshObject = function() {
 		return RMMV.Plugin.Web.getPlugin(this.id);
@@ -179,6 +180,7 @@ RMMV.Plugin.create = function(oplugin) {
 	plugin.compatibleRMVersion = oplugin.compatibleRMVersion;
 	plugin.hash = oplugin.hash;
 	plugin.script = oplugin.script;
+	plugin.filename = oplugin.filename;
 	
 	return plugin;
 };
@@ -196,6 +198,7 @@ RMMV.Plugin.createArray = function(oplugins) {
 		plugin.compatibleRMVersion = oplugin.compatibleRMVersion;
 		plugin.hash = oplugin.hash;
 		plugin.script = oplugin.script;
+		plugin.filename = oplugin.filename;
 		plugins.push(plugin);
 	}
 	

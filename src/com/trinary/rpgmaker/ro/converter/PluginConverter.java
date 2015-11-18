@@ -29,6 +29,7 @@ public class PluginConverter extends ROConverter<PluginRO, Plugin> {
 		entity.setCompatibleRMVersion(ro.getCompatibleRMVersion());
 		entity.setHash(ro.getHash());
 		entity.setDateCreated(ro.getDateCreated());
+		entity.setFilename(ro.getFilename());
 		if (ro.getScript() != null) {
 			entity.setScript(Base64.encodeBase64String(ro.getScript().getBytes()));
 		}
@@ -49,6 +50,7 @@ public class PluginConverter extends ROConverter<PluginRO, Plugin> {
 		ro.setCompatibleRMVersion(entity.getCompatibleRMVersion());
 		ro.setHash(entity.getHash());
 		ro.setDateCreated(entity.getDateCreated());
+		ro.setFilename(entity.getFilename());
 		
 		return ro;
 	}

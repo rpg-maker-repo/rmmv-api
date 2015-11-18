@@ -44,12 +44,18 @@ app.controller('page-controller', function($scope) {
 	$scope.onChangeVersion = function(plugin) {
 		if (!plugin.selectedVersion.dependencies) {
 			plugin.selectedVersion.dependencies = plugin.selectedVersion.getDependencies();
-			plugin.showScript = false;
+		}
+		
+		if (plugin.showScript) {
+			plugin.script = plugin.selectedVersion.getScript();
 		}
 	};
 	
 	$scope.removeDependency = function(version, dependency) {
-		
+		var index = version.dependencies.indexOf(dependency);
+		if (index >= 0) {
+			version.dependencies.splice(index, 1);
+		}
 	}
 	
 	$scope.onAddDependency = function(plugin, dependency) {
@@ -96,6 +102,7 @@ app.controller('page-controller', function($scope) {
 		newPlugin = RMMV.PluginBase.create(base);
 		newPluginVersion = RMMV.Plugin.create(pluginVersion);
 		newPluginVersion.script = $scope.fileContent;
+		newPluginVersion.filename = $scope.fileNames[0];
 		
 		if (!newPluginVersion.script) {
 			return;
@@ -129,6 +136,8 @@ app.controller('page-controller', function($scope) {
 		var newPluginVersion = RMMV.Plugin.create(pluginVersion);
 		var pluginBase = RMMV.PluginBase.create(base);
 		newPluginVersion.script = $scope.fileContent;
+		newPluginVersion.filename = $scope.fileNames[0];
+		
 		if (!newPluginVersion.script) {
 			return;
 		}
@@ -160,7 +169,15 @@ app.controller('page-controller', function($scope) {
 		.val('')
 		.removeAttr('checked')
 		.removeAttr('selected');
-	}
+	};
+	
+	$scope.fileNameChanged = function(element) {
+		var files = element.files;
+		$scope.fileNames = [];
+		for (var i = 0; i < files.length; i++) {
+			$scope.fileNames.push(files[i].name);
+		}
+	};
 	
 	$scope.reloadPluginList();
 });

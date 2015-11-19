@@ -10,6 +10,7 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
+import com.trinary.rpgmaker.handler.EJBAccessExceptionHandler;
 import com.trinary.rpgmaker.resource.PluginBaseResource;
 import com.trinary.rpgmaker.resource.PluginResource;
 
@@ -40,6 +41,9 @@ public class RestApplication extends Application {
         // Swagger resources
         resources.add(ApiListingResource.class);
         resources.add(SwaggerSerializers.class);
+        
+        // Exception mappers
+        resources.add(EJBAccessExceptionHandler.class);
 
         return resources;
 	}

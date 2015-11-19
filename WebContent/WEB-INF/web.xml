@@ -7,4 +7,11 @@
   <servlet-name>default</servlet-name>
   <url-pattern>/ui/*</url-pattern>
  </servlet-mapping>
+ <login-config>
+  <auth-method>BASIC</auth-method>
+  <realm-name>ApplicationRealm</realm-name>
+ </login-config>
+ <security-role>
+  <role-name>Developer</role-name>
+ </security-role>
 </web-app>

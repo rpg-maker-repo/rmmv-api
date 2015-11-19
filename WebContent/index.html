@@ -71,10 +71,20 @@
 	<body>
 		<div ng-app="rmmv-ui" ng-controller="page-controller">
 			<div class="menu">
-				<ul class="tabs">
-					<li ng-click="page.view = 'view-plugins'">View Plugins</li>
-					<li ng-click="page.view = 'create-plugin'">Create Plugin</li>
-				</ul>
+				<div ng-show="!isAuthenticated" class="login">
+					<input type="text" placeholder="username" ng-model="authentication.username"></input>
+					<input type="password" placeholder="password" ng-model="authentication.password"></input>
+					<button ng-click="authenticate(authentication);">Login</button>
+				</div>
+				<div ng-show="isAuthenticated" class="login">
+					Welcome {{loggedInUser}}.
+				</div>
+				<div class="navbar">
+					<ul class="tabs">
+						<li ng-click="page.view = 'view-plugins'">View Plugins</li>
+						<li ng-show="isAuthenticated" ng-click="page.view = 'create-plugin'">Create Plugin</li>
+					</ul>
+				</div>
 			</div>
 
 			<div ng-show="page.view == 'view-plugins'">

@@ -3,15 +3,6 @@
         <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
         <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
-        <dependent-module archiveName="trinary-ro.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/trinary-ro/trinary-ro">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="rmmv-common.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/rmmv-common/rmmv-common">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="trinary-string-utils.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/trinary-string-utils/trinary-string-utils">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <property name="java-output-path" value="/rmmv-api/build/classes"/>
         <property name="context-root" value="rmmv-api"/>
     </wb-module>

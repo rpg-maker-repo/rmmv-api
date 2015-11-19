@@ -6,6 +6,27 @@ RMMV.PluginBase.Web = {};
 RMMV.Plugin.Web = {};
 RMMV.Web = {};
 RMMV.Web.baseUrl = "http://localhost:8080/rmmv-api";
+RMMV.Web.authString = "";
+
+// Test credentials
+
+RMMV.Web.testCredentials = function(authString) {
+	var success = false;
+	$.ajax({
+		type: "GET",
+		accept: "application/json",
+		url: RMMV.Web.baseUrl + "/v1/base",
+		headers: {
+			"Authorization": authString
+		},
+		success: function(data) {
+			success = true;
+		},
+		async: false
+	});
+	
+	return success;
+}
 
 // Plugin Base
 
@@ -65,6 +86,9 @@ RMMV.PluginBase.Web.createPluginBase = function(plugin) {
 		url: RMMV.Web.baseUrl + "/v1/base",
 		data: JSON.stringify(plugin),
 		dataType: "json",
+		headers: {
+			"Authorization": RMMV.Web.authString
+		},
 		success: function(data) {
 			saved = RMMV.PluginBase.create(data);
 		},
@@ -128,6 +152,9 @@ RMMV.PluginBase.Web.addVersion = function(id, version) {
 		url: RMMV.Web.baseUrl + "/v1/base/" + id + "/version",
 		data: JSON.stringify(version),
 		dataType: "json",
+		headers: {
+			"Authorization": RMMV.Web.authString
+		},
 		success: function(data) {
 			plugin = RMMV.Plugin.create(data);
 		},
@@ -273,6 +300,9 @@ RMMV.Plugin.Web.addDependencies = function(id, dependencies) {
 		url: RMMV.Web.baseUrl + "/v1/plugin/" + id + "/dependency",
 		data: JSON.stringify(dependencies),
 		dataType: "json",
+		headers: {
+			"Authorization": RMMV.Web.authString
+		},
 		success: function(data) {
 			plugin = RMMV.Plugin.create(data);
 		},

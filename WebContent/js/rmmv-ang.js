@@ -34,6 +34,25 @@ app.controller('page-controller', function($scope) {
 	$scope.newPlugin.dependencies = [];
 	$scope.newPlugin.selectedDependency = {};
 	$scope.newPlugin.selectedVersion = "";
+	$scope.authentication = {username: "", password: ""};
+	$scope.isAuthenticated = false;
+	$scope.loggedInUser = "";
+	
+	$scope.authenticate = function(authentication) {
+		var basicAuthString = authentication.username + ":" + authentication.password;
+		basicAuthString = "Basic " + btoa(basicAuthString);
+		
+		if (RMMV.Web.testCredentials(basicAuthString)) {
+			RMMV.Web.authString = basicAuthString;
+			$scope.isAuthenticated = true;
+			$scope.loggedInUser = authentication.username;
+		} else {
+			alert("Authentication Failed!");
+		}
+		
+		authentication.username = "";
+		authentication.password = "";
+	}
 	
 	$scope.onChangeBase = function(base, newPluginVersion) {
 		$scope.newPluginVersion.dependencies = base.latestVersion.getDependencies();
@@ -108,9 +127,19 @@ app.controller('page-controller', function($scope) {
 			return;
 		}
 		
-		// Create new plugin and new initial version
+		// Create new plugin
 		newPlugin = RMMV.PluginBase.Web.createPluginBase(newPlugin);
+		if (!newPlugin) {
+			alert("You must be authenticated to do this!");
+			return;
+		}
+		
+		// Create new initial version
 		newPluginVersion = newPlugin.addVersion(newPluginVersion);
+		if (!newPluginVersion) {
+			alert("You must be authenticated to do this!");
+			return;
+		}
 		
 		// Add dependencies if there are any.
 		if (dependencies) {
@@ -143,6 +172,11 @@ app.controller('page-controller', function($scope) {
 		}
 		
 		newPluginVersion = pluginBase.addVersion(newPluginVersion);
+		
+		if (!newPluginVersion) {
+			alert("You must be authenticated to do this!");
+			return;
+		}
 		
 		// Add dependencies if there are any.
 		if (dependencies) {

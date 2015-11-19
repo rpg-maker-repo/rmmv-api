@@ -44,5 +44,20 @@
 		<artifactId>swagger-jaxrs</artifactId>
 		<version>1.5.0</version>
 	</dependency>
+	<dependency>
+		<groupId>rmmv-common</groupId>
+		<artifactId>rmmv-common</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</dependency>
+	<dependency>
+		<groupId>trinary-ro</groupId>
+		<artifactId>trinary-ro</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</dependency>
+	<dependency>
+		<groupId>trinary-string-utils</groupId>
+		<artifactId>trinary-string-utils</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</dependency>
   </dependencies>
 </project>

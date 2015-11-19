@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
@@ -46,7 +47,10 @@ public class PluginBaseResource {
 	}
 	
 	@POST
-	@ApiOperation(value = "Create a plugin")
+	@ApiOperation(value = "Create a plugin",
+			authorizations = {
+			@Authorization(value = "basic")
+	})
 	@ApiResponses({
 		@ApiResponse(code = 200, message = "Success", response=PluginBaseRO.class)
 	})
@@ -81,7 +85,10 @@ public class PluginBaseResource {
 	
 	@POST
 	@Path("/{id}/version")
-	@ApiOperation(value = "Create a version of plugin identified by id")
+	@ApiOperation(value = "Create a version of plugin identified by id",
+			authorizations = {
+			@Authorization(value = "basic")
+	})
 	@ApiResponses({
 		@ApiResponse(code = 200, message = "Success", response=PluginRO.class)
 	})

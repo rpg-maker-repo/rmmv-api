@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
 
 import java.util.List;
 
@@ -95,7 +96,11 @@ public class PluginResource {
 	
 	@Path("/{id}/dependency")
 	@POST
-	@ApiOperation(value = "Add one to many dependencies to version identified by id")
+	@ApiOperation(
+			value = "Add one to many dependencies to version identified by id",
+			authorizations = {
+					@Authorization(value = "basic")
+			})
 	@ApiResponses({
 		@ApiResponse(code = 200, message = "Success", response=PluginRO.class)
 	})

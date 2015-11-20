@@ -311,3 +311,92 @@ RMMV.Plugin.Web.addDependencies = function(id, dependencies) {
 	
 	return plugin;
 };
+
+// Utility module
+RMMV.Util = (function() {
+	// Retrieve next comment block starting at offset
+	function getNextCommentBlock(str, offset) {
+		var sub   = str.substring(offset);
+	
+		var start = sub.indexOf("/*");
+	
+		if (start == -1) {
+			return null;
+		}
+	
+		var comment = sub.substring(start + 2);
+		var end   = comment.indexOf("*/");
+	
+		comment = comment.substring(0, end);
+	
+		return {comment: comment, lastIndex: offset + start + end + 2};
+	}
+
+	return {
+		getPluginMetaData: function(data) {
+			var map = {};
+			var params = {};
+			var lastParamFound = "";
+	
+			// Retrieve first comment
+			var lastIndex = 0;
+	
+			// Start scanning for comments.
+			while ((commentBlock = getNextCommentBlock(data, lastIndex)) != null) {
+		
+				// Scan this comment
+				var end = commentBlock.comment.indexOf('@');
+				var buffer = commentBlock.comment.substring(end + 1);
+				while (end != -1) {
+					var start = 0;
+					var end   = buffer.indexOf('@');
+	
+					var markup = "";
+					if (end != -1) {
+						markup = "@" + buffer.substring(start, end).split("*").join("").split("\r\n").join("$NEWLINE$").split("\n").join("$NEWLINE$").split("  ").join(" ");
+					} else {
+						markup = "@" + buffer.substring(start).split("*").join("").split("\r\n").join("$NEWLINE$").split("\r\n").join("$NEWLINE$").split("  ").join(" ");
+					}
+	
+					var pattern = /@([^ ]+) (.*)/;
+					var groups = pattern.exec(markup);
+		
+					if (!groups) {
+						continue;
+					}
+					var annotation = groups[1].split("$NEWLINE$").join("").trim();
+					var value      = groups[2].trim();
+			
+					if (annotation == "help") {
+						value = value.split("$NEWLINE$").join("\n");
+					} else {
+						value = value.split("$NEWLINE$").join("");
+					}
+	
+					if (annotation == "param") {
+						params[value] = {};
+						lastParamFound = value;
+					} else if (annotation == "desc" && lastParamFound) {
+						params[lastParamFound].description = value;
+					} else if (annotation == "default" && lastParamFound) {
+						params[lastParamFound].defaultValue = value;
+					} else {
+						map[annotation] = value;
+					}
+	
+					buffer = buffer.substring(end + 1);
+				}
+				lastIndex = commentBlock.lastIndex;
+			}
+	
+			// Remove dead params
+			for (var key in params) {
+				if (!params[key].description) {
+					delete params[key];
+				}
+			}
+	
+			return {data: map, params: params};
+		}
+	};
+})();

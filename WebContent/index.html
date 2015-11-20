@@ -175,7 +175,7 @@
 							</tr>
 							<tr>
 								<td>File:</td>
-								<td><input type="file" onChange="angular.element(this).scope().fileNameChanged(this);" on-read-file="loadScript($fileContent)"></input></td>
+								<td><input type="file" onChange="angular.element(this).scope().fileNameChanged(this, angular.element(this).scope().newPluginVersion);" on-read-file="loadScript($fileContent, null, newPluginVersion)"></input></td>
 							</tr>
 						</table>
 					</form>
@@ -195,11 +195,11 @@
 							</tr>
 							<tr>
 								<td>Initial Version</td>
-								<td><input type="text" ng-model="initialPluginVersion.version"></input></td>
+								<td><input type="text" ng-model="newPlugin.initialPluginVersion.version"></input></td>
 							</tr>
 							<tr>
 								<td>RPG Maker Version:</td>
-								<td><input type="text" ng-model="initialPluginVersion.compatibleRMVersion"></input></td>
+								<td><input type="text" ng-model="newPlugin.initialPluginVersion.compatibleRMVersion"></input></td>
 							</tr>
 							<tr>
 								<td>Add Dependencies</td>
@@ -223,11 +223,11 @@
 							</tr>
 							<tr>
 								<td>File:</td>
-								<td><input type="file" onChange="angular.element(this).scope().fileNameChanged(this);" on-read-file="loadScript($fileContent)"></input></td>
+								<td><input type="file" onChange="angular.element(this).scope().fileNameChanged(this, angular.element(this).scope().newPlugin.initialPluginVersion);" on-read-file="loadScript($fileContent, newPlugin, newPlugin.initialPluginVersion)"></input></td>
 							</tr>
 						</table>
 					</form>
-					<button ng-click="createPlugin(newPlugin, initialPluginVersion, newPlugin.dependencies); clearForm('#newPluginForm');">Create</button>
+					<button ng-click="createPlugin(newPlugin, newPlugin.initialPluginVersion, newPlugin.dependencies); clearForm('#newPluginForm');">Create</button>
 				</div>
 			</div>
 		</div>

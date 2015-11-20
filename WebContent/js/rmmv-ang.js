@@ -34,6 +34,8 @@ app.controller('page-controller', function($scope) {
 	$scope.newPlugin.dependencies = [];
 	$scope.newPlugin.selectedDependency = {};
 	$scope.newPlugin.selectedVersion = "";
+	$scope.newPlugin.initialPluginVersion = {};
+	$scope.newPlugin.initialPluginVersion.dependencies = [];
 	$scope.authentication = {username: "", password: ""};
 	$scope.isAuthenticated = false;
 	$scope.loggedInUser = "";
@@ -112,16 +114,39 @@ app.controller('page-controller', function($scope) {
 		}
 	};
 	
-	$scope.loadScript = function($fileContent) {
-		$scope.fileContent = $fileContent;
+	$scope.loadScript = function($fileContent, plugin, pluginVersion) {
+		var scriptMetadata = RMMV.Util.getPluginMetaData($fileContent);
+		pluginVersion.script = $fileContent;
+		
+		// Fill in fields if metadata annotations are present
+		
+		if (plugin) {
+			if (scriptMetadata.data["pluginname"]) {
+				plugin.name = scriptMetadata.data["pluginname"];
+			}
+		
+			if (scriptMetadata.data["plugindesc"]) {
+				plugin.description = scriptMetadata.data["plugindesc"];
+			}
+		}
+		
+		if (pluginVersion) {
+			if (scriptMetadata.data["pluginvers"]) {
+				pluginVersion.version = scriptMetadata.data["pluginvers"];
+			}
+			
+			if (scriptMetadata.data["pluginrmvers"]) {
+				pluginVersion.compatibleRMVersion = scriptMetadata.data["pluginrmvers"];
+			}
+		}
 	};
 	
 	$scope.createPlugin = function(base, pluginVersion, dependencies) {
 		// Create the plugin and save it.
 		newPlugin = RMMV.PluginBase.create(base);
 		newPluginVersion = RMMV.Plugin.create(pluginVersion);
-		newPluginVersion.script = $scope.fileContent;
-		newPluginVersion.filename = $scope.fileNames[0];
+		newPluginVersion.script = pluginVersion.script;
+		//newPluginVersion.filename = $scope.fileNames[0];
 		
 		if (!newPluginVersion.script) {
 			return;
@@ -164,8 +189,8 @@ app.controller('page-controller', function($scope) {
 		// Create the new plugin version.
 		var newPluginVersion = RMMV.Plugin.create(pluginVersion);
 		var pluginBase = RMMV.PluginBase.create(base);
-		newPluginVersion.script = $scope.fileContent;
-		newPluginVersion.filename = $scope.fileNames[0];
+		newPluginVersion.script = pluginVersion.script;
+		//newPluginVersion.filename = $scope.fileNames[0];
 		
 		if (!newPluginVersion.script) {
 			return;
@@ -205,12 +230,8 @@ app.controller('page-controller', function($scope) {
 		.removeAttr('selected');
 	};
 	
-	$scope.fileNameChanged = function(element) {
-		var files = element.files;
-		$scope.fileNames = [];
-		for (var i = 0; i < files.length; i++) {
-			$scope.fileNames.push(files[i].name);
-		}
+	$scope.fileNameChanged = function(element, pluginVersion) {
+		pluginVersion.filename = element.files[0].name;
 	};
 	
 	$scope.reloadPluginList();

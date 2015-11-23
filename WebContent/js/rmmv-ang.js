@@ -39,6 +39,7 @@ app.controller('page-controller', function($scope) {
 	$scope.authentication = {username: "", password: ""};
 	$scope.isAuthenticated = false;
 	$scope.loggedInUser = "";
+	$scope.locale = "EN";
 	
 	$scope.authenticate = function(authentication) {
 		var basicAuthString = authentication.username + ":" + authentication.password;
@@ -115,7 +116,7 @@ app.controller('page-controller', function($scope) {
 	};
 	
 	$scope.loadScript = function($fileContent, plugin, pluginVersion) {
-		var scriptMetadata = RMMV.Util.getPluginMetaData($fileContent);
+		var scriptMetadata = RMMV.Util.getPluginMetaData($fileContent, $scope.locale);
 		pluginVersion.script = $fileContent;
 		
 		// Fill in fields if metadata annotations are present

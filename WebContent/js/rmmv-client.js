@@ -317,6 +317,14 @@ RMMV.Util = (function() {
 	// Retrieve next comment block starting at offset
 	function getNextCommentBlock(str, offset) {
 		var sub   = str.substring(offset);
+		
+		// Get locale of comment block
+		var locale = "EN";
+		var pattern = /\/\*:(.*)/;
+		var groups = pattern.exec(sub);
+		if (groups && groups[1]) {
+			locale = groups[1].toUpperCase();
+		}
 	
 		var start = sub.indexOf("/*");
 	
@@ -329,11 +337,11 @@ RMMV.Util = (function() {
 	
 		comment = comment.substring(0, end);
 	
-		return {comment: comment, lastIndex: offset + start + end + 2};
+		return {comment: comment, lastIndex: offset + start + end + 2, locale: locale};
 	}
 
 	return {
-		getPluginMetaData: function(data) {
+		getPluginMetaData: function(data, locale) {
 			var map = {};
 			var params = {};
 			var lastParamFound = "";
@@ -343,6 +351,10 @@ RMMV.Util = (function() {
 	
 			// Start scanning for comments.
 			while ((commentBlock = getNextCommentBlock(data, lastIndex)) != null) {
+				if (locale != commentBlock.locale) {
+					lastIndex = commentBlock.lastIndex;
+					continue;
+				}
 		
 				// Scan this comment
 				var end = commentBlock.comment.indexOf('@');
@@ -362,6 +374,7 @@ RMMV.Util = (function() {
 					var groups = pattern.exec(markup);
 		
 					if (!groups) {
+						buffer = buffer.substring(end + 1);
 						continue;
 					}
 					var annotation = groups[1].split("$NEWLINE$").join("").trim();

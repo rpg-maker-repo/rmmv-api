@@ -77,7 +77,7 @@
 					<button ng-click="authenticate(authentication);">Login</button>
 				</div>
 				<div ng-show="isAuthenticated" class="login">
-					Welcome {{loggedInUser}}.
+					Welcome {{loggedInUser}}.<button ng-click="deauthenticate();">Logout</button>
 				</div>
 				<div class="navbar">
 					<ul class="tabs">

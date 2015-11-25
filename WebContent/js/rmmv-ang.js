@@ -78,6 +78,32 @@ app.controller('page-controller', function($scope, $cookies) {
 		authentication.password = "";
 	};
 	
+	$scope.deauthenticate = function() {
+		RMMV.Web.deauthenticate($scope.accessToken);
+		
+		$scope.clearAuth();
+	}
+	
+	$scope.checkAuthentication = function() {
+		var token = null;
+		if ($scope.accessToken) {
+			token = RMMV.Web.reauthenticate($scope.accessToken);
+		}
+		
+		if (!token) {
+			$scope.clearAuth();
+		}
+	}
+	
+	$scope.clearAuth = function() {
+		$scope.isAuthenticated = false;
+		$scope.accessToken = {};
+		$scope.hasDeveloper = false;
+		$scope.hasSuperUser = false;
+		
+		$cookies.remove("token");
+	}
+	
 	$scope.onChangeBase = function(base, newPluginVersion) {
 		$scope.newPluginVersion.dependencies = base.latestVersion.getDependencies();
 		$scope.newPluginVersion.version = base.latestVersion.version;
@@ -258,4 +284,5 @@ app.controller('page-controller', function($scope, $cookies) {
 	
 	$scope.reloadPluginList();
 	$scope.refreshCookie();
+	$scope.checkAuthentication();
 });

@@ -42,7 +42,7 @@ public class UserConverter extends ROConverter<UserRO, User> {
 	protected UserRO _addLinks(UserRO object) {
 		try {
 			Map<String, Object> args = new HashMap<String, Object>();
-			args.put("id", object.getUsername());
+			args.put("username", object.getUsername());
 			Method get      = UserResource.class.getMethod("get", String.class);
 			Method getRoles = UserResource.class.getMethod("getRoles", String.class);
 			Method addRole  = UserResource.class.getMethod("addRole", String.class, String.class);

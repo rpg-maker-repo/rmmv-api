@@ -23,6 +23,8 @@ import com.trinary.rpgmaker.ro.UserRO;
 import com.trinary.rpgmaker.ro.converter.TokenConverter;
 import com.trinary.rpgmaker.ro.converter.UserConverter;
 import com.trinary.rpgmaker.security.token.Token;
+import com.trinary.rpgmaker.security.token.TokenExpiredException;
+import com.trinary.rpgmaker.security.token.TokenInvalidException;
 import com.trinary.rpgmaker.security.token.TokenManager;
 
 @RequestScoped
@@ -73,9 +75,23 @@ public class UserService {
 		return tokenConverter.convertEntity(tokenManager.releaseToken(tokenString));
 	}
 	
+	public TokenRO checkToken(String tokenString) {
+		try {
+			return tokenConverter.convertEntity(tokenManager.authenticateToken(tokenString));
+		} catch (TokenInvalidException e) {
+			return null;
+		} catch (TokenExpiredException e) {
+			return null;
+		}
+	}
+	
 	public UserRO addRole(String username, String roleName) {
 		User user = userDao.getUserByName(username);
 		Role role = roleDao.getRoleByName(roleName);
+		
+		if (user.getRoleNames().contains(roleName)) {
+			return userConverter.convertEntity(user);
+		}
 		
 		if (role == null) {
 			return userConverter.convertEntity(user);
@@ -152,8 +168,17 @@ public class UserService {
 		return Base64.encodeBase64String(md.digest());
 	}
 
-	public UserRO update(String username) {
-		// TODO Auto-generated method stub
-		return null;
+	public UserRO update(String username, UserRO userRo) {
+		User oldUser = userDao.getUserByName(username);
+		User updatedUser = userConverter.convertRO(userRo);
+		
+		// Nothing but password should be able to be modified
+		updatedUser.setId(oldUser.getId());
+		updatedUser.setDateCreated(oldUser.getDateCreated());
+		updatedUser.setUsername(oldUser.getUsername());
+		updatedUser.setSalt(generateSalt(updatedUser));
+		updatedUser.setPassword(hashPassword(updatedUser.getPassword(), updatedUser.getSalt()));
+		
+		return userConverter.convertEntity(userDao.update(updatedUser));
 	}
 }

@@ -311,7 +311,51 @@ RMMV.Web.authenticate = function(username, password) {
 	});
 	
 	return token;
+};
+
+RMMV.Web.reauthenticate = function(token) {
+	var ret = null;
+	
+	$.ajax({
+		type: "GET",
+		accept: "application/json",
+		contentType: "application/json",
+		url: RMMV.Web.baseUrl + "/v1/token/" + token.token,
+		dataType: "json",
+		headers: {
+			"Authorization": RMMV.Web.authString
+		},
+		success: function(data) {
+			ret = data;
+			RMMV.Web.authString = ret.token;
+		},
+		async: false
+	});
+	
+	return ret;
 }
+
+RMMV.Web.deauthenticate = function(token) {
+	var token = null;
+	
+	$.ajax({
+		type: "DELETE",
+		accept: "application/json",
+		contentType: "application/json",
+		url: RMMV.Web.baseUrl + "/v1/token/" + token.token,
+		dataType: "json",
+		headers: {
+			"Authorization": RMMV.Web.authString
+		},
+		success: function(data) {
+			token = data;
+			RMMV.Web.authString = "";
+		},
+		async: false
+	});
+	
+	return token;
+};
 
 // Utility module
 RMMV.Util = (function() {

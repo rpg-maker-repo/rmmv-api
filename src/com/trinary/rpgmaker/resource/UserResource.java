@@ -21,8 +21,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.SecurityContext;
 
+import com.trinary.rpgmaker.persistence.entity.User;
 import com.trinary.rpgmaker.ro.UserRO;
 import com.trinary.rpgmaker.service.UserService;
 
@@ -70,8 +72,15 @@ public class UserResource {
 	@ApiResponses({
 		@ApiResponse(code = 200, message = "Success", response=UserRO.class)
 	})
-	public Response update(@PathParam("username") String username) {
-		UserRO user = userService.update(username);
+	@RolesAllowed({"DEVELOPER", "SUPERUSER"})
+	public Response update(@PathParam("username") String username, UserRO user) {
+		User principal = (User)securityContext.getUserPrincipal();
+		
+		if (!securityContext.isUserInRole("SUPERUSER") && user.getId() != principal.getId()) {
+			return Response.status(Status.FORBIDDEN).build();
+		}
+		
+		user = userService.update(username, user);
 		return Response.ok(user).build();
 	}
 	

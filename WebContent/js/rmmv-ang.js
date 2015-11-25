@@ -22,7 +22,7 @@ app.directive('onReadFile', function ($parse) {
 	};
 });
 
-app.controller('page-controller', function($scope) {
+app.controller('page-controller', function($scope, $cookies) {
 	$scope.page = {};
 	$scope.page.view = "view-plugins";
 	$scope.plugins = [];
@@ -37,25 +37,46 @@ app.controller('page-controller', function($scope) {
 	$scope.newPlugin.initialPluginVersion = {};
 	$scope.newPlugin.initialPluginVersion.dependencies = [];
 	$scope.authentication = {username: "", password: ""};
+	$scope.accessToken = {};
+	$scope.hasDeveloper = false;
+	$scope.hasSuperUser = false;
 	$scope.isAuthenticated = false;
 	$scope.loggedInUser = "";
 	$scope.locale = "EN";
 	
-	$scope.authenticate = function(authentication) {
-		var basicAuthString = authentication.username + ":" + authentication.password;
-		basicAuthString = "Basic " + btoa(basicAuthString);
+	$scope.refreshCookie = function() {
+		$scope.accessToken = $cookies.getObject("token");
 		
-		if (RMMV.Web.testCredentials(basicAuthString)) {
-			RMMV.Web.authString = basicAuthString;
+		if ($scope.accessToken) {
 			$scope.isAuthenticated = true;
-			$scope.loggedInUser = authentication.username;
-		} else {
-			alert("Authentication Failed!");
+			$scope.loggedInUser = $scope.accessToken.principal;
+			$scope.hasDeveloper = $scope.accessToken.roles.indexOf("DEVELOPER") != -1;
+			$scope.hasSuperUser = $scope.accessToken.roles.indexOf("SUPERUSER") != -1;
 		}
+	};
+	
+	$scope.authenticate = function(authentication) {
+		$scope.accessToken = RMMV.Web.authenticate(authentication.username, authentication.password);
+		
+		if (!$scope.accessToken) {
+			alert("Authentication Failed!");
+			authentication.username = "";
+			authentication.password = "";
+			return;
+		}
+		
+		$scope.isAuthenticated = true;
+		$scope.loggedInUser = authentication.username;
+		$scope.hasDeveloper = $scope.accessToken.roles.indexOf("DEVELOPER") != -1;
+		$scope.hasSuperUser = $scope.accessToken.roles.indexOf("SUPERUSER") != -1;
+		
+		$cookies.putObject("token", $scope.accessToken, {
+			expires: new Date($scope.accessToken.expires)
+		});
 		
 		authentication.username = "";
 		authentication.password = "";
-	}
+	};
 	
 	$scope.onChangeBase = function(base, newPluginVersion) {
 		$scope.newPluginVersion.dependencies = base.latestVersion.getDependencies();
@@ -236,4 +257,5 @@ app.controller('page-controller', function($scope) {
 	};
 	
 	$scope.reloadPluginList();
+	$scope.refreshCookie();
 });

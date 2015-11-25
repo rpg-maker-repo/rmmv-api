@@ -11,7 +11,7 @@ public class Role {
 	@GeneratedValue
 	long id;
 	
-	@Column
+	@Column(unique=true)
 	String name;
 
 	/**

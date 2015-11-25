@@ -13,6 +13,8 @@ import javax.ws.rs.core.Application;
 import com.trinary.rpgmaker.handler.EJBAccessExceptionHandler;
 import com.trinary.rpgmaker.resource.PluginBaseResource;
 import com.trinary.rpgmaker.resource.PluginResource;
+import com.trinary.rpgmaker.resource.TokenResource;
+import com.trinary.rpgmaker.resource.UserResource;
 
 @ApplicationPath("/")
 public class RestApplication extends Application {
@@ -37,6 +39,8 @@ public class RestApplication extends Application {
         // RMMV resources
         resources.add(PluginResource.class);
         resources.add(PluginBaseResource.class);
+        resources.add(UserResource.class);
+        resources.add(TokenResource.class);
 
         // Swagger resources
         resources.add(ApiListingResource.class);

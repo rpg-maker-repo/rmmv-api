@@ -7,11 +7,13 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 
 import com.trinary.rpgmaker.persistence.entity.Plugin;
 import com.trinary.rpgmaker.persistence.entity.PluginBase;
 
 @Stateless
+@Transactional
 public class PluginDao extends GenericDao<Plugin, Long> {
 	@PersistenceContext
 	EntityManager em;

@@ -1,18 +1,20 @@
 package com.trinary.rpgmaker.persistence.entity;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 @Entity
-public class User {
+public class User implements Principal {
 	@Id
 	@GeneratedValue
 	long id;
@@ -20,7 +22,7 @@ public class User {
 	@Column
 	Date dateCreated;
 	
-	@Column
+	@Column(unique=true)
 	String username;
 	
 	@Column
@@ -29,7 +31,7 @@ public class User {
 	@Column
 	String salt;
 	
-	@ManyToMany
+	@ManyToMany(fetch=FetchType.EAGER)
 	List<Role> roles;
 	
 	@OneToMany
@@ -141,5 +143,10 @@ public class User {
 		}
 		
 		return roleNames;
+	}
+
+	@Override
+	public String getName() {
+		return username;
 	}
 }

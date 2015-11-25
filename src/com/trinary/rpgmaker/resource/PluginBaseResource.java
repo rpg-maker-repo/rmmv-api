@@ -8,7 +8,6 @@ import io.swagger.annotations.Authorization;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -28,7 +27,6 @@ import com.trinary.rpgmaker.service.PluginBaseService;
 @Path("/v1/base")
 @Api
 @Produces(MediaType.APPLICATION_JSON)
-@Stateless
 @PermitAll
 public class PluginBaseResource {
 	@Inject
@@ -42,7 +40,7 @@ public class PluginBaseResource {
 	@ApiResponses({
 		@ApiResponse(code = 200, message = "Success", response=PluginBaseRO.class, responseContainer="List")
 	})
-	public Response getAll() {
+	public Response getAll() {		
 		return Response.ok(service.getAll()).build();
 	}
 	
@@ -54,7 +52,7 @@ public class PluginBaseResource {
 	@ApiResponses({
 		@ApiResponse(code = 200, message = "Success", response=PluginBaseRO.class)
 	})
-	@RolesAllowed("Developer")
+	@RolesAllowed("DEVELOPER")
 	public Response create(PluginBaseRO base) {
 		return Response.ok(service.save(base)).build();
 	}
@@ -92,7 +90,7 @@ public class PluginBaseResource {
 	@ApiResponses({
 		@ApiResponse(code = 200, message = "Success", response=PluginRO.class)
 	})
-	@RolesAllowed("Developer")
+	@RolesAllowed("DEVELOPER")
 	public Response addVersion(@PathParam("id") Long id, PluginRO version) {
 		return Response.ok(service.addVersion(id, version)).build();
 	}

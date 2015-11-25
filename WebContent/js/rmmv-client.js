@@ -8,26 +8,6 @@ RMMV.Web = {};
 RMMV.Web.baseUrl = "http://localhost:8080/rmmv-api";
 RMMV.Web.authString = "";
 
-// Test credentials
-
-RMMV.Web.testCredentials = function(authString) {
-	var success = false;
-	$.ajax({
-		type: "GET",
-		accept: "application/json",
-		url: RMMV.Web.baseUrl + "/v1/base",
-		headers: {
-			"Authorization": authString
-		},
-		success: function(data) {
-			success = true;
-		},
-		async: false
-	});
-	
-	return success;
-}
-
 // Plugin Base
 
 RMMV.Types.PluginBase = function() {
@@ -311,6 +291,27 @@ RMMV.Plugin.Web.addDependencies = function(id, dependencies) {
 	
 	return plugin;
 };
+
+RMMV.Web.authenticate = function(username, password) {
+	var authentication = {username: username, password: password};
+	var token = null;
+	
+	$.ajax({
+		type: "POST",
+		accept: "application/json",
+		contentType: "application/json",
+		url: RMMV.Web.baseUrl + "/v1/token/",
+		data: JSON.stringify(authentication),
+		dataType: "json",
+		success: function(data) {
+			token = data;
+			RMMV.Web.authString = "Bearer " + token.token;
+		},
+		async: false
+	});
+	
+	return token;
+}
 
 // Utility module
 RMMV.Util = (function() {

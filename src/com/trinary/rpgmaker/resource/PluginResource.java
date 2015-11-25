@@ -11,7 +11,6 @@ import java.util.List;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -31,7 +30,6 @@ import com.trinary.rpgmaker.service.PluginService;
 @Path("/v1/plugin")
 @Api
 @Produces(MediaType.APPLICATION_JSON)
-@Stateless
 @PermitAll
 public class PluginResource {
 	@Inject
@@ -104,7 +102,7 @@ public class PluginResource {
 	@ApiResponses({
 		@ApiResponse(code = 200, message = "Success", response=PluginRO.class)
 	})
-	@RolesAllowed("Developer")
+	@RolesAllowed("DEVELOPER")
 	public Response addDependencies(@PathParam("id") Long id, List<PluginRO> dependencies) {
 		return Response.ok(service.addDependencies(id, dependencies)).build();
 	}

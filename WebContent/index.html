@@ -82,7 +82,9 @@
 				<div class="navbar">
 					<ul class="tabs">
 						<li ng-click="page.view = 'view-plugins'">View Plugins</li>
-						<li ng-show="isAuthenticated" ng-click="page.view = 'create-plugin'">Create Plugin</li>
+						<li ng-show="hasDeveloper" ng-click="page.view = 'create-plugin'">Create Plugin</li>
+						<li ng-show="hasSuperUser" ng-click="page.view = 'create-user'">Create User</li>
+						<li ng-show="hasSuperUser" ng-click="page.view = 'promote-user'">Promote User</li>
 					</ul>
 				</div>
 			</div>

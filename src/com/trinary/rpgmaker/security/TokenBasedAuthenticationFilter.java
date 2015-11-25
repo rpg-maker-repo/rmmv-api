@@ -1,9 +1,8 @@
 package com.trinary.rpgmaker.security;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
+import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -12,11 +11,17 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import com.trinary.rpgmaker.persistence.entity.Role;
 import com.trinary.rpgmaker.persistence.entity.User;
+import com.trinary.rpgmaker.security.token.Token;
+import com.trinary.rpgmaker.security.token.TokenExpiredException;
+import com.trinary.rpgmaker.security.token.TokenInvalidException;
+import com.trinary.rpgmaker.security.token.TokenManager;
+import com.trinary.rpgmaker.service.UserService;
 
 public class TokenBasedAuthenticationFilter implements Filter {
-
+	@Inject TokenManager manager;
+	@Inject UserService userService;
+	
 	@Override
 	public void destroy() {}
 
@@ -33,29 +38,25 @@ public class TokenBasedAuthenticationFilter implements Filter {
 		
 		String[] authHeaderParts = authHeader.split(" ");
 		
-		if (!authHeaderParts[0].trim().equals("SimpleToken")) {
+		if (!authHeaderParts[0].trim().equals("Bearer")) {
 			next.doFilter(request, response);
 			return;
 		}
 		
-		// Token stuff here
+		Token token = null;
+		try {
+			token = manager.authenticateToken(authHeaderParts[1]);
+		} catch (TokenInvalidException e) {
+			e.printStackTrace();
+		} catch (TokenExpiredException e) {
+			e.printStackTrace();
+		}
 		
-		// Start temporary test stuff
-		Role userRole = new Role();
-		userRole.setName("USER");
-		Role adminRole = new Role();
-		adminRole.setName("ADMIN");
-		
-		List<Role> roles = new ArrayList<Role>();
-		roles.add(userRole);
-		roles.add(adminRole);
-		
-		User user = new User();
-		user.setUsername("deusprogrammer");
-		user.setRoles(roles);
-		// End temporary test stuff
-		
-		next.doFilter(new UserRoleRequestWrapper(user, httpRequest), response);
+		if (token != null) {
+			User user = (User)token.getPrincipal();
+			System.out.println(user.getRoleNames());
+			next.doFilter(new UserRoleRequestWrapper(user, httpRequest), response);
+		}
 	}
 
 	@Override

@@ -23,9 +23,13 @@ app.directive('onReadFile', function ($parse) {
 });
 
 app.controller('page-controller', function($scope, $cookies) {
+	// Plugin page
 	$scope.page = {};
 	$scope.page.view = "view-plugins";
 	$scope.plugins = [];
+	$scope.users = RMMV.User.Web.getUsers();
+	
+	// Plugin form
 	$scope.newPluginVersion = {};
 	$scope.newPluginVersion.dependencies = [];
 	$scope.newPluginVersion.selectedDependency = {};
@@ -36,13 +40,23 @@ app.controller('page-controller', function($scope, $cookies) {
 	$scope.newPlugin.selectedVersion = "";
 	$scope.newPlugin.initialPluginVersion = {};
 	$scope.newPlugin.initialPluginVersion.dependencies = [];
+	
+	// User form
+	$scope.newUser = {username: "", password1: "", password2: "", roles: []};
+	$scope.modUser = {username: "", password1: "", password2: "", roles: []};
+	$scope.generatedPassword = "";
+	
+	// Authentication
 	$scope.authentication = {username: "", password: ""};
 	$scope.accessToken = {};
 	$scope.hasDeveloper = false;
 	$scope.hasSuperUser = false;
 	$scope.isAuthenticated = false;
 	$scope.loggedInUser = "";
+	
+	// Etc
 	$scope.locale = "EN";
+	$scope.roles  = RMMV.Web.getDeclaredRoles();
 	
 	$scope.refreshCookie = function() {
 		$scope.accessToken = $cookies.getObject("token");
@@ -82,7 +96,17 @@ app.controller('page-controller', function($scope, $cookies) {
 		RMMV.Web.deauthenticate($scope.accessToken);
 		
 		$scope.clearAuth();
-	}
+	};
+	
+	$scope.generatePassword = function(user) {
+		var password = Math.random().toString(36).slice(-8);
+		$scope.generatedPassword = password;
+		user.password1 = user.password2 = password;
+	};
+	
+	$scope.createUser = function(user) {
+		console.log("CREATING USER");
+	};
 	
 	$scope.checkAuthentication = function() {
 		var token = null;
@@ -120,12 +144,16 @@ app.controller('page-controller', function($scope, $cookies) {
 		}
 	};
 	
+	$scope.onChangeUser = function(user) {
+		$scope.modUser.roles = RMMV.User.Web.getRoles(user);
+	};
+	
 	$scope.removeDependency = function(version, dependency) {
 		var index = version.dependencies.indexOf(dependency);
 		if (index >= 0) {
 			version.dependencies.splice(index, 1);
 		}
-	}
+	};
 	
 	$scope.onAddDependency = function(plugin, dependency) {
 		plugin.dependencies.push(dependency);

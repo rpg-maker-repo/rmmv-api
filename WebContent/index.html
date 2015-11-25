@@ -77,14 +77,13 @@
 					<button ng-click="authenticate(authentication);">Login</button>
 				</div>
 				<div ng-show="isAuthenticated" class="login">
-					Welcome {{loggedInUser}}.<button ng-click="deauthenticate();">Logout</button>
+					Welcome {{loggedInUser}}.&nbsp;<button ng-click="deauthenticate();">Logout</button>
 				</div>
 				<div class="navbar">
 					<ul class="tabs">
 						<li ng-click="page.view = 'view-plugins'">View Plugins</li>
 						<li ng-show="hasDeveloper" ng-click="page.view = 'create-plugin'">Create Plugin</li>
-						<li ng-show="hasSuperUser" ng-click="page.view = 'create-user'">Create User</li>
-						<li ng-show="hasSuperUser" ng-click="page.view = 'promote-user'">Promote User</li>
+						<li ng-show="hasSuperUser" ng-click="page.view = 'create-user'">Admin</li>
 					</ul>
 				</div>
 			</div>
@@ -231,6 +230,51 @@
 					</form>
 					<button ng-click="createPlugin(newPlugin, newPlugin.initialPluginVersion, newPlugin.dependencies); clearForm('#newPluginForm');">Create</button>
 				</div>
+			</div>
+			<div ng-show="page.view == 'create-user'">
+				<h2>Create User</h2>
+				<form>
+					<table>
+						<tr><td>Username</td><td><input ng-model="newUser.username" type="text"></input></td></tr>
+						<tr><td>Password</td><td><input ng-model="newUser.password1" type="password"></input></td><td><button ng-click="generatePassword(newUser)">Generate Password</button></td></tr>
+						<tr><td></td><td><input ng-model="newUser.password2" type="password"></input></td></tr>
+						<tr>
+							<td>Roles</td>
+							<td>
+								<select multiple ng-model="newUser.roles">
+									<option ng-repeat="role in roles" value="{{role}}">{{role}}</option>
+								</select>
+							</td>
+						</tr>
+						<tr><td>Generated Password:</td><td>{{generatedPassword}}</td></tr>
+					</table>
+				</form>
+				<button ng-click="createUser(newUser)">Create User</button>
+				
+				<h2>Modify User</h2>
+				<form>
+					<table>
+						<tr>
+							<td>Username</td>
+							<td>
+								<select ng-model="modUser.username" ng-change="onChangeUser(modUser)">
+									<option ng-repeat="user in users" value="{{user.username}}">{{user.username}}</option>
+								</select>
+							</td>
+						</tr>
+						<tr><td>Password</td><td><input ng-model="modUser.password1" type="password"></input></td></tr>
+						<tr><td></td><td><input ng-model="modUser.password2" type="password"></input></td></tr>
+						<tr>
+							<td>Roles</td>
+							<td>
+								<select multiple ng-model="modUser.roles">
+									<option ng-repeat="role in roles" value="{{role}}">{{role}}</option>
+								</select>
+							</td>
+						</tr>
+					</table>
+				</form>
+				<button ng-click="modifyUser(modUser)">Create User</button>
 			</div>
 		</div>
 	</body>

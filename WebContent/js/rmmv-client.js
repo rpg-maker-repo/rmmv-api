@@ -4,6 +4,8 @@ RMMV.PluginBase = {};
 RMMV.Plugin = {};
 RMMV.PluginBase.Web = {};
 RMMV.Plugin.Web = {};
+RMMV.User = {};
+RMMV.User.Web = {};
 RMMV.Web = {};
 RMMV.Web.baseUrl = "http://localhost:8080/rmmv-api";
 RMMV.Web.authString = "";
@@ -292,6 +294,42 @@ RMMV.Plugin.Web.addDependencies = function(id, dependencies) {
 	return plugin;
 };
 
+RMMV.User.Web.getUsers = function() {
+	var users = null;
+	
+	$.ajax({
+		type: "GET",
+		accept: "application/json",
+		contentType: "application/json",
+		url: RMMV.Web.baseUrl + "/v1/user/",
+		dataType: "json",
+		success: function(data) {
+			users = data;
+		},
+		async: false
+	});
+	
+	return users;
+};
+
+RMMV.User.Web.getRoles = function(user) {
+	var roles = null;
+	
+	$.ajax({
+		type: "GET",
+		accept: "application/json",
+		contentType: "application/json",
+		url: RMMV.Web.baseUrl + "/v1/user/" + user.username + "/role",
+		dataType: "json",
+		success: function(data) {
+			roles = data;
+		},
+		async: false
+	});
+	
+	return roles;
+};
+
 RMMV.Web.authenticate = function(username, password) {
 	var authentication = {username: username, password: password};
 	var token = null;
@@ -336,7 +374,7 @@ RMMV.Web.reauthenticate = function(token) {
 }
 
 RMMV.Web.deauthenticate = function(token) {
-	var token = null;
+	var ret = null;
 	
 	$.ajax({
 		type: "DELETE",
@@ -348,13 +386,31 @@ RMMV.Web.deauthenticate = function(token) {
 			"Authorization": RMMV.Web.authString
 		},
 		success: function(data) {
-			token = data;
+			ret = data;
 			RMMV.Web.authString = "";
 		},
 		async: false
 	});
 	
-	return token;
+	return ret;
+};
+
+RMMV.Web.getDeclaredRoles = function() {
+	var roles = null;
+	
+	$.ajax({
+		type: "GET",
+		accept: "application/json",
+		contentType: "application/json",
+		url: RMMV.Web.baseUrl + "/v1/role/",
+		dataType: "json",
+		success: function(data) {
+			roles = data;
+		},
+		async: false
+	});
+	
+	return roles;
 };
 
 // Utility module

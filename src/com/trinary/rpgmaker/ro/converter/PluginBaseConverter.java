@@ -1,6 +1,7 @@
 package com.trinary.rpgmaker.ro.converter;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,6 +9,7 @@ import javax.ejb.EJB;
 
 import com.trinary.ro.converter.ROConverter;
 import com.trinary.rpgmaker.persistence.entity.PluginBase;
+import com.trinary.rpgmaker.persistence.entity.Tag;
 import com.trinary.rpgmaker.resource.PluginBaseResource;
 import com.trinary.rpgmaker.ro.PluginBaseRO;
 import com.trinary.rpgmaker.ro.PluginRO;
@@ -34,6 +36,11 @@ public class PluginBaseConverter extends ROConverter<PluginBaseRO, PluginBase> {
 		pluginBase.setName(entity.getName());
 		pluginBase.setDescription(entity.getDescription());
 		pluginBase.setDateCreated(entity.getDateCreated());
+		
+		pluginBase.setTags(new ArrayList<String>());
+		for (Tag tag : entity.getTags()) {
+			pluginBase.getTags().add(tag.getValue());
+		}
 		
 		return pluginBase;
 	}

@@ -13,8 +13,10 @@ import javax.inject.Inject;
 import org.apache.commons.codec.binary.Base64;
 
 import com.trinary.rpgmaker.persistence.dao.PluginBaseDao;
+import com.trinary.rpgmaker.persistence.dao.TagDao;
 import com.trinary.rpgmaker.persistence.entity.Plugin;
 import com.trinary.rpgmaker.persistence.entity.PluginBase;
+import com.trinary.rpgmaker.persistence.entity.Tag;
 import com.trinary.rpgmaker.ro.PluginBaseRO;
 import com.trinary.rpgmaker.ro.PluginRO;
 import com.trinary.rpgmaker.ro.converter.PluginBaseConverter;
@@ -22,18 +24,29 @@ import com.trinary.rpgmaker.ro.converter.PluginConverter;
 
 @RequestScoped
 public class PluginBaseService {
-	@Inject
-	PluginBaseConverter pluginBaseConverter;
-	@Inject
-	PluginConverter pluginConverter;
+	@Inject PluginBaseConverter pluginBaseConverter;
+	@Inject PluginConverter pluginConverter;
 	
-	@EJB
-	PluginBaseDao dao;
+	@EJB PluginBaseDao dao;
+	@EJB TagDao tagDao;
 	
 	public PluginBaseRO save(PluginBaseRO plugin) {
 		plugin.setDateCreated(new Date());
 		
 		PluginBase base = pluginBaseConverter.convertRO(plugin);
+		List<Tag> tags = new ArrayList<Tag>();
+		for (String tagString : plugin.getTags()) {
+			Tag tag = tagDao.findByName(tagString);
+			if (tag == null) {
+				tag = new Tag();
+				tag.setValue(tagString);
+				
+				tag = tagDao.save(tag);
+			}
+			tags.add(tag);
+		}
+		base.setTags(tags);
+		
 		return pluginBaseConverter.convertEntity(dao.save(base));
 	}
 	
@@ -69,6 +82,28 @@ public class PluginBaseService {
 		Plugin version = pluginConverter.convertRO(versionRo);
 		return pluginConverter.convertEntity(dao.addVersion(id, version));
 	}
+	
+	public PluginBaseRO addTags(Long id, List<String> tagStrings) {
+		PluginBase base = dao.get(id);
+		List<Tag> tags = new ArrayList<Tag>();
+		PluginBaseRO baseRO = pluginBaseConverter.convertEntity(base);
+		for (String tagString : tagStrings) {
+			if (!baseRO.getTags().contains(tagString)) {
+				Tag tag = tagDao.findByName(tagString);
+				if (tag == null) {
+					tag = new Tag();
+					tag.setValue(tagString);
+					
+					tag = tagDao.save(tag);
+				}
+				tags.add(tag);
+			}
+		}
+		base.getTags().addAll(tags);
+		dao.update(base);
+		
+		return pluginBaseConverter.convertEntity(base);
+	}
 
 	public List<PluginRO> getLatestVersions(Long id) {
 		List<PluginRO> versions = getVersions(id);
@@ -76,5 +111,14 @@ public class PluginBaseService {
 		latestVersion.add(versions.get(versions.size() - 1));
 		
 		return latestVersion;
+	}
+	
+	public List<String> getTags(Long id) {
+		PluginBase base = dao.get(id);
+		List<String> tagStrings = new ArrayList<String>();
+		for (Tag tag : base.getTags()) {
+			tagStrings.add(tag.getValue());
+		}
+		return tagStrings;
 	}
 }

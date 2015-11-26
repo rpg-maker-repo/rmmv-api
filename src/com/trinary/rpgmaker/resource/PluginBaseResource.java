@@ -1,5 +1,7 @@
 package com.trinary.rpgmaker.resource;
 
+import java.util.List;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -93,5 +95,26 @@ public class PluginBaseResource {
 	@RolesAllowed("DEVELOPER")
 	public Response addVersion(@PathParam("id") Long id, PluginRO version) {
 		return Response.ok(service.addVersion(id, version)).build();
+	}
+	
+	@POST
+	@Path("/{id}/tag")
+	@ApiOperation(value = "Add tags to plugin identified by id")
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "Success", response=PluginRO.class)
+	})
+	@RolesAllowed("DEVELOPER")
+	public Response addTag(@PathParam("id") Long id, List<String> tagStrings) {
+		return Response.ok(service.addTags(id, tagStrings)).build();
+	}
+	
+	@GET
+	@Path("/{id}/tag")
+	@ApiOperation(value = "Get tags for plugin identified by id")
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "Success", response=String.class, responseContainer="List")
+	})
+	public Response getTags(@PathParam("id") Long id) {
+		return Response.ok(service.getTags(id)).build();
 	}
 }

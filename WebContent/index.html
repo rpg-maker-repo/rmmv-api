@@ -116,7 +116,7 @@
 							</tr>
 						</table>
 						<div id="plugin-{{plugin.id}}-deps" class="plugin-deps">
-							<h3 ng-show="plugin.dependencies.length > 0">Dependencies</h3>
+							<h3 ng-show="plugin.selectedVersion.dependencies.length > 0">Dependencies</h3>
 							<div id="dep-{{dep.id}}" class="dependency" ng-repeat="dep in plugin.selectedVersion.dependencies">
 								<h3>{{dep.name}}</h3>
 								<table class="dependency-table indented">

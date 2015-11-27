@@ -38,8 +38,10 @@ public class PluginBaseConverter extends ROConverter<PluginBaseRO, PluginBase> {
 		pluginBase.setDateCreated(entity.getDateCreated());
 		
 		pluginBase.setTags(new ArrayList<String>());
-		for (Tag tag : entity.getTags()) {
-			pluginBase.getTags().add(tag.getValue());
+		if (entity.getTags() != null) {
+			for (Tag tag : entity.getTags()) {
+				pluginBase.getTags().add(tag.getValue());
+			}
 		}
 		
 		return pluginBase;

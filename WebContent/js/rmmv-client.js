@@ -7,7 +7,7 @@ RMMV.Plugin.Web = {};
 RMMV.User = {};
 RMMV.User.Web = {};
 RMMV.Web = {};
-RMMV.Web.baseUrl = "http://localhost:8080/rmmv-api";
+RMMV.Web.baseUrl = "/rmmv-api";
 RMMV.Web.authString = "";
 
 // Plugin Base
@@ -60,7 +60,7 @@ RMMV.PluginBase.createArray = function(oplugins) {
 };
 
 RMMV.PluginBase.Web.createPluginBase = function(plugin) {
-	var saved = RMMV.Types.PluginBase();
+	var saved = null;
 	$.ajax({
 		type: "POST",
 		accept: "application/json",
@@ -69,7 +69,7 @@ RMMV.PluginBase.Web.createPluginBase = function(plugin) {
 		data: JSON.stringify(plugin),
 		dataType: "json",
 		headers: {
-			"Authorization": RMMV.Web.authString
+			"Authorization": "Bearer " + RMMV.Web.authString
 		},
 		success: function(data) {
 			saved = RMMV.PluginBase.create(data);
@@ -135,7 +135,7 @@ RMMV.PluginBase.Web.addVersion = function(id, version) {
 		data: JSON.stringify(version),
 		dataType: "json",
 		headers: {
-			"Authorization": RMMV.Web.authString
+			"Authorization": "Bearer " + RMMV.Web.authString
 		},
 		success: function(data) {
 			plugin = RMMV.Plugin.create(data);
@@ -283,7 +283,7 @@ RMMV.Plugin.Web.addDependencies = function(id, dependencies) {
 		data: JSON.stringify(dependencies),
 		dataType: "json",
 		headers: {
-			"Authorization": RMMV.Web.authString
+			"Authorization": "Bearer " + RMMV.Web.authString
 		},
 		success: function(data) {
 			plugin = RMMV.Plugin.create(data);
@@ -343,7 +343,7 @@ RMMV.Web.authenticate = function(username, password) {
 		dataType: "json",
 		success: function(data) {
 			token = data;
-			RMMV.Web.authString = "Bearer " + token.token;
+			RMMV.Web.authString = token.token;
 		},
 		async: false
 	});
@@ -358,11 +358,8 @@ RMMV.Web.reauthenticate = function(token) {
 		type: "GET",
 		accept: "application/json",
 		contentType: "application/json",
-		url: RMMV.Web.baseUrl + "/v1/token/" + token.token,
+		url: RMMV.Web.baseUrl + "/v1/token/" + encodeURI(token.token),
 		dataType: "json",
-		headers: {
-			"Authorization": RMMV.Web.authString
-		},
 		success: function(data) {
 			ret = data;
 			RMMV.Web.authString = ret.token;
@@ -383,7 +380,7 @@ RMMV.Web.deauthenticate = function(token) {
 		url: RMMV.Web.baseUrl + "/v1/token/" + token.token,
 		dataType: "json",
 		headers: {
-			"Authorization": RMMV.Web.authString
+			"Authorization": "Bearer " + RMMV.Web.authString
 		},
 		success: function(data) {
 			ret = data;

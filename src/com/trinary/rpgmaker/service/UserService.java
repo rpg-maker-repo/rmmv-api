@@ -169,16 +169,8 @@ public class UserService {
 	}
 
 	public UserRO update(String username, UserRO userRo) {
-		User oldUser = userDao.getUserByName(username);
-		User updatedUser = userConverter.convertRO(userRo);
-		
-		// Nothing but password should be able to be modified
-		updatedUser.setId(oldUser.getId());
-		updatedUser.setDateCreated(oldUser.getDateCreated());
-		updatedUser.setUsername(oldUser.getUsername());
-		updatedUser.setSalt(generateSalt(updatedUser));
-		updatedUser.setPassword(hashPassword(updatedUser.getPassword(), updatedUser.getSalt()));
-		
-		return userConverter.convertEntity(userDao.update(updatedUser));
+		User user = userDao.getUserByName(username);
+		user.setPassword(hashPassword(userRo.getPassword(), user.getSalt()));
+		return userConverter.convertEntity(userDao.update(user));
 	}
 }

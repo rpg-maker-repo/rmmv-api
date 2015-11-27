@@ -35,17 +35,20 @@ public class PluginBaseService {
 		
 		PluginBase base = pluginBaseConverter.convertRO(plugin);
 		List<Tag> tags = new ArrayList<Tag>();
-		for (String tagString : plugin.getTags()) {
-			Tag tag = tagDao.findByName(tagString);
-			if (tag == null) {
-				tag = new Tag();
-				tag.setValue(tagString);
-				
-				tag = tagDao.save(tag);
+		
+		if (plugin.getTags() != null) {
+			for (String tagString : plugin.getTags()) {
+				Tag tag = tagDao.findByName(tagString);
+				if (tag == null) {
+					tag = new Tag();
+					tag.setValue(tagString);
+					
+					tag = tagDao.save(tag);
+				}
+				tags.add(tag);
 			}
-			tags.add(tag);
+			base.setTags(tags);
 		}
-		base.setTags(tags);
 		
 		return pluginBaseConverter.convertEntity(dao.save(base));
 	}

@@ -27,7 +27,7 @@ public class StartupListener implements ServletContextListener {
 		}
 		
 		// Create the user if not already existing
-		UserRO userRO = userService.get("mmain");
+		UserRO userRO = userService.get("root");
 		if (userRO == null) {
 			userRO = new UserRO();
 			userRO.setUsername("root");

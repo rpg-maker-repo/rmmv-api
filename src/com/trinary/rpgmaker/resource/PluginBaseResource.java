@@ -42,7 +42,7 @@ public class PluginBaseResource {
 	@ApiResponses({
 		@ApiResponse(code = 200, message = "Success", response=PluginBaseRO.class, responseContainer="List")
 	})
-	public Response getAll() {		
+	public Response getAll() {
 		return Response.ok(service.getAll()).build();
 	}
 	

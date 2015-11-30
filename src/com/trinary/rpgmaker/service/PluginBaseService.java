@@ -42,9 +42,16 @@ public class PluginBaseService {
 				if (tag == null) {
 					tag = new Tag();
 					tag.setValue(tagString);
-					
 					tag = tagDao.save(tag);
 				}
+				
+				// Add this base plugin to this tag
+				if (tag.getPlugins() == null) {
+					tag.setPlugins(new ArrayList<PluginBase>());
+				}
+				tag.getPlugins().add(base);
+				tag = tagDao.update(tag);
+				
 				tags.add(tag);
 			}
 			base.setTags(tags);
@@ -54,7 +61,15 @@ public class PluginBaseService {
 	}
 	
 	public List<PluginBaseRO> getAll() {
-		return pluginBaseConverter.convertEntityList(dao.getAll());
+		return getAll(null, null, null, null);
+	}
+	
+	public List<PluginBaseRO> getAll(Integer page, Integer pageSize, String search, List<String> tags) {
+		if (search == null) {
+			return pluginBaseConverter.convertEntityList(dao.getAll(page, pageSize));
+		}
+		
+		return pluginBaseConverter.convertEntityList(dao.getAll(page, pageSize, search));
 	}
 	
 	public PluginBaseRO getById(Long id) {
@@ -62,7 +77,11 @@ public class PluginBaseService {
 	}
 	
 	public List<PluginRO> getVersions(Long id) {
-		return pluginConverter.convertEntityList(dao.getVersions(id));
+		return getVersions(id, null, null);
+	}
+	
+	public List<PluginRO> getVersions(Long id, Integer page, Integer pageSize) {
+		return pluginConverter.convertEntityList(dao.getVersions(id, page, pageSize));
 	}
 	
 	public PluginRO addVersion(Long id, PluginRO versionRo) {
@@ -96,9 +115,16 @@ public class PluginBaseService {
 				if (tag == null) {
 					tag = new Tag();
 					tag.setValue(tagString);
-					
 					tag = tagDao.save(tag);
 				}
+				
+				// Add this base plugin to this tag
+				if (tag.getPlugins() == null) {
+					tag.setPlugins(new ArrayList<PluginBase>());
+				}
+				tag.getPlugins().add(base);
+				tag = tagDao.update(tag);
+				
 				tags.add(tag);
 			}
 		}

@@ -55,7 +55,7 @@ public class PluginBaseConverter extends ROConverter<PluginBaseRO, PluginBase> {
 			
 			Class<?> resource = PluginBaseResource.class;
 			Method get = resource.getMethod("get", Long.class);
-			Method getVersions = resource.getMethod("getVersions", Long.class, Boolean.class);
+			Method getVersions = resource.getMethod("getVersions", Long.class, Boolean.class, Integer.class, Integer.class);
 			Method addVersion = resource.getMethod("addVersion", Long.class, PluginRO.class);
 			object.addLink(generator.createLink(get, args).setRel("self"));
 			object.addLink(generator.createLink(getVersions, args).setRel("get-versions"));

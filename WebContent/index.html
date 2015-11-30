@@ -1,5 +1,6 @@
 <html>
 	<head>
+		<title>RMMV Asset Repository Test Harness</title>
 		<style>
 			.plugin, .dependency {
 				margin-top: 5px;
@@ -69,6 +70,7 @@
 		<script src="js/rmmv-ang.js"></script>
 	</head>
 	<body>
+		<div class="banner"><h1>RMMV Asset Repository Test Harness</h1></div>
 		<div ng-app="rmmv-ui" ng-controller="page-controller">
 			<div class="menu">
 				<div ng-show="!isAuthenticated" class="login">
@@ -89,10 +91,10 @@
 			</div>
 
 			<div ng-show="page.view == 'view-plugins'">
-				<h1>All Plugins</h1>
+				<h2>All Plugins</h2>
 				<div class="plugin-list">
 					<div id="plugin-{{plugin.id}}" class="plugin" ng-repeat="plugin in plugins">
-						<h2>{{plugin.name}}</h2>
+						<h3>{{plugin.name}}</h3>
 						<table class="plugin-table indented">
 							<tr>
 								<td>Description:</td>
@@ -130,7 +132,7 @@
 				</div>
 			</div>
 			<div ng-show="page.view == 'create-plugin'">
-				<h1>Create New Plugin Version</h1>
+				<h2>Create New Plugin Version</h2>
 				<div class="create-plugin-div">
 					<form id="newPluginVersionForm">
 						<table>
@@ -182,7 +184,7 @@
 					</form>
 					<button ng-click="createPluginVersion(selectedBase, newPluginVersion, newPluginVersion.dependencies); clearForm('#newPluginVersionForm');">Create</button>
 				</div>
-				<h1>Create New Plugin</h1>
+				<h2>Create New Plugin</h2>
 				<div class="create-plugin-div">
 					<form id="newPluginForm">
 						<table>

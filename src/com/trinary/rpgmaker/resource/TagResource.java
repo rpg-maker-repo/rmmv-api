@@ -9,10 +9,13 @@ import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.trinary.rpgmaker.ro.PluginBaseRO;
+import com.trinary.rpgmaker.ro.TagRO;
 import com.trinary.rpgmaker.service.TagService;
 
 @Path("/v1/tag")
@@ -25,9 +28,29 @@ public class TagResource {
 	@GET
 	@ApiOperation(value="Get all defined tags")
 	@ApiResponses({
-		@ApiResponse(code = 200, message = "Success", response=String.class, responseContainer="List")
+		@ApiResponse(code = 200, message = "Success", response=TagRO.class, responseContainer="List")
 	})
 	public Response getAll() {
 		return Response.ok(service.getTags()).build();
+	}
+	
+	@Path("/{tagString}")
+	@GET
+	@ApiOperation(value="Get tag defined by tagString")
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "Success", response=TagRO.class)
+	})
+	public Response get(@PathParam("tagString") String tagString) {
+		return Response.ok(service.getTag(tagString)).build();
+	}
+	
+	@Path("/{tagString}/plugin")
+	@GET
+	@ApiOperation(value="Get all plugins that fall under this tag")
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "Success", response=PluginBaseRO.class, responseContainer="List")
+	})
+	public Response getPlugins(@PathParam("tagString") String tagString) {
+		return Response.ok(service.getPlugins(tagString)).build();
 	}
 }

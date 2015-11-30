@@ -42,8 +42,12 @@ public class PluginBaseResource {
 	@ApiResponses({
 		@ApiResponse(code = 200, message = "Success", response=PluginBaseRO.class, responseContainer="List")
 	})
-	public Response getAll() {
-		return Response.ok(service.getAll()).build();
+	public Response getAll(
+			@QueryParam("page") Integer page, 
+			@QueryParam("pageSize") Integer pageSize, 
+			@QueryParam("search") String search,
+			@QueryParam("tag") List<String> tags) {
+		return Response.ok(service.getAll(page, pageSize, search, tags)).build();
 	}
 	
 	@POST
@@ -75,9 +79,17 @@ public class PluginBaseResource {
 	@ApiResponses({
 		@ApiResponse(code = 200, message = "Success", response=PluginRO.class, responseContainer="List")
 	})
-	public Response getVersions(@PathParam("id") Long id, @QueryParam("latest") Boolean latest) {
+	public Response getVersions(
+			@PathParam("id") Long id, 
+			@QueryParam("latest") Boolean latest, 
+			@QueryParam("page") Integer page, 
+			@QueryParam("pageSize") Integer pageSize) {
 		if (latest != null && latest) {
 			return Response.ok(service.getLatestVersions(id)).build();
+		}
+		
+		if (page != null) {
+			return Response.ok(service.getVersions(id, page, pageSize)).build();
 		}
 		
 		return Response.ok(service.getVersions(id)).build();

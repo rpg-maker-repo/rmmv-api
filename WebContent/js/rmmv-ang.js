@@ -46,6 +46,9 @@ app.controller('page-controller', function($scope, $cookies) {
 	$scope.modUser = {username: "", password1: "", password2: "", roles: []};
 	$scope.generatedPassword = "";
 	
+	// Profile form
+	$scope.profileForm = {password1: "", password2: ""};
+	
 	// Authentication
 	$scope.authentication = {username: "", password: ""};
 	$scope.accessToken = {};
@@ -98,6 +101,11 @@ app.controller('page-controller', function($scope, $cookies) {
 		$scope.clearAuth();
 	};
 	
+	$scope.changePassword = function(passwordForm) {
+		RMMV.User.Web.changePassword($scope.accessToken.principal, passwordForm.password1);
+		
+	};
+	
 	$scope.generatePassword = function(user) {
 		var password = Math.random().toString(36).slice(-8);
 		$scope.generatedPassword = password;
@@ -105,7 +113,29 @@ app.controller('page-controller', function($scope, $cookies) {
 	};
 	
 	$scope.createUser = function(user) {
-		console.log("CREATING USER");
+		var roles = user.roles;
+		
+		var newUser = {};
+		newUser.username = user.username;
+		newUser.password = user.password1;
+		
+		var newUser = RMMV.User.Web.createUser(newUser);
+		
+		if (!newUser) {
+			alert("User creation failed!");
+			$scope.generatedPassword = "";
+			return;
+		}
+		
+		newUser = RMMV.User.Web.addRoles(newUser, roles);
+		
+		if (!newUser) {
+			alert("Role add failed!");
+			$scope.generatedPassword = "";
+			return;
+		}
+		
+		$scope.generatedPassword = "";
 	};
 	
 	$scope.checkAuthentication = function() {
@@ -117,7 +147,7 @@ app.controller('page-controller', function($scope, $cookies) {
 		if (!token) {
 			$scope.clearAuth();
 		}
-	}
+	};
 	
 	$scope.clearAuth = function() {
 		$scope.isAuthenticated = false;
@@ -126,7 +156,7 @@ app.controller('page-controller', function($scope, $cookies) {
 		$scope.hasSuperUser = false;
 		
 		$cookies.remove("token");
-	}
+	};
 	
 	$scope.onChangeBase = function(base, newPluginVersion) {
 		$scope.newPluginVersion.dependencies = base.latestVersion.getDependencies();

@@ -55,8 +55,6 @@ public class UserService {
 		user.setPassword(hashPassword(user.getPassword(), user.getSalt()));
 		userDao.save(user);
 		
-		addRole(user.getUsername(), "DEVELOPER");
-		
 		return userConverter.convertEntity(user);
 	}
 	

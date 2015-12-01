@@ -93,7 +93,7 @@ RMMV.PluginBase.Web.getPluginBase = function(id) {
 	});
 	
 	return ret;
-}
+};
 
 RMMV.PluginBase.Web.getPluginBases = function() {
 	var ret = null;
@@ -108,7 +108,7 @@ RMMV.PluginBase.Web.getPluginBases = function() {
 	});
 	
 	return ret;
-}
+};
 
 RMMV.PluginBase.Web.getVersions = function(id) {
 	var ret = null;
@@ -123,7 +123,7 @@ RMMV.PluginBase.Web.getVersions = function(id) {
 	});
 	
 	return ret;
-}
+};
 
 RMMV.PluginBase.Web.addVersion = function(id, version) {
 	var plugin = null;
@@ -330,6 +330,71 @@ RMMV.User.Web.getRoles = function(user) {
 	return roles;
 };
 
+RMMV.User.Web.createUser = function(user) {
+	var newUser = null;
+	$.ajax({
+		type: "POST",
+		accept: "application/json",
+		contentType: "application/json",
+		url: RMMV.Web.baseUrl + "/v1/user/",
+		dataType: "json",
+		data: JSON.stringify(user),
+		headers: {
+			"Authorization": "Bearer " + RMMV.Web.authString
+		},
+		success: function(data) {
+			newUser = data;
+		},
+		async: false
+	});
+	return newUser;
+};
+
+RMMV.User.Web.addRoles = function(user, roles) {
+	var newUser = null;
+	
+	$.ajax({
+		type: "POST",
+		accept: "application/json",
+		contentType: "application/json",
+		url: RMMV.Web.baseUrl + "/v1/user/" + user.username + "/role",
+		dataType: "json",
+		data: JSON.stringify(roles),
+		headers: {
+			"Authorization": "Bearer " + RMMV.Web.authString
+		},
+		success: function(data) {
+			newUser = data;
+		},
+		async: false
+	});
+	
+	return newUser;
+};
+
+RMMV.User.Web.changePassword = function(username, newPassword) {
+	var success = false;
+	$.ajax({
+		type: "PUT",
+		accept: "application/json",
+		contentType: "application/json",
+		url: RMMV.Web.baseUrl + "/v1/user/" + username,
+		dataType: "json",
+		data: JSON.stringify({
+			password: newPassword
+		}),
+		headers: {
+			"Authorization": "Bearer " + RMMV.Web.authString
+		},
+		success: function(data) {
+			success = true;
+		},
+		async: false
+	});
+	
+	return success;
+};
+
 RMMV.Web.authenticate = function(username, password) {
 	var authentication = {username: username, password: password};
 	var token = null;
@@ -368,7 +433,7 @@ RMMV.Web.reauthenticate = function(token) {
 	});
 	
 	return ret;
-}
+};
 
 RMMV.Web.deauthenticate = function(token) {
 	var ret = null;

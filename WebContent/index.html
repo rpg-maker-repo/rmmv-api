@@ -85,6 +85,7 @@
 					<ul class="tabs">
 						<li ng-click="page.view = 'view-plugins'">View Plugins</li>
 						<li ng-show="hasDeveloper" ng-click="page.view = 'create-plugin'">Create Plugin</li>
+						<li ng-show="isAuthenticated" ng-click="page.view = 'profile'">My Profile</li>
 						<li ng-show="hasSuperUser" ng-click="page.view = 'create-user'">Admin</li>
 					</ul>
 				</div>
@@ -233,9 +234,31 @@
 					<button ng-click="createPlugin(newPlugin, newPlugin.initialPluginVersion, newPlugin.dependencies); clearForm('#newPluginForm');">Create</button>
 				</div>
 			</div>
+			<div ng-show="page.view == 'profile'">
+				<h2>My User</h2>
+				<table>
+					<tr><td>Username</td><td>{{accessToken.principal}}</td></tr>
+					<tr>
+						<td>Roles</td>
+						<td>
+							<ul>
+								<li ng-repeat="role in accessToken.roles" value="{{role}}">{{role}}</li>
+							</ul>
+						</td>
+					</tr>
+				</table>
+				<h2>Change Password</h2>
+				<form id="changePasswordForm">
+					<table>
+						<tr><td>Password</td><td><input ng-model="profileForm.password1" type="password"></input></td></tr>
+						<tr><td></td><td><input ng-model="profileForm.password2" type="password"></input></td></tr>
+					</table>
+				</form>
+				<button ng-click="changePassword(profileForm); clearForm('#changePasswordForm');">Change Password</button>
+			</div>
 			<div ng-show="page.view == 'create-user'">
 				<h2>Create User</h2>
-				<form>
+				<form id="createUserForm">
 					<table>
 						<tr><td>Username</td><td><input ng-model="newUser.username" type="text"></input></td></tr>
 						<tr><td>Password</td><td><input ng-model="newUser.password1" type="password"></input></td><td><button ng-click="generatePassword(newUser)">Generate Password</button></td></tr>
@@ -251,10 +274,10 @@
 						<tr><td>Generated Password:</td><td>{{generatedPassword}}</td></tr>
 					</table>
 				</form>
-				<button ng-click="createUser(newUser)">Create User</button>
+				<button ng-click="createUser(newUser); clearForm('#createUserForm');">Create User</button>
 				
 				<h2>Modify User</h2>
-				<form>
+				<form id="modifyUserForm">
 					<table>
 						<tr>
 							<td>Username</td>
@@ -276,7 +299,7 @@
 						</tr>
 					</table>
 				</form>
-				<button ng-click="modifyUser(modUser)">Create User</button>
+				<button ng-click="modifyUser(modUser); clearForm('#modifyUserForm');">Create User</button>
 			</div>
 		</div>
 	</body>

@@ -282,6 +282,8 @@ app.controller('page-controller', function($scope, $cookies) {
 			newPluginVersion.addDependencies(newDependencies);
 		}
 		
+		base.tags = "";
+		
 		// Clear dependencies list
 		$scope.newPluginVersion.dependencies = [];
 		$scope.newPlugin.dependencies = [];

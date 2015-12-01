@@ -2,6 +2,14 @@
 	<head>
 		<title>RMMV Asset Repository Test Harness</title>
 		<style>
+			.tag-container {
+				padding: 2px;
+				margin-right: 5px;
+				border-radius: 5px;
+				background-color: gray;
+				color: white;
+			}
+			
 			.plugin, .dependency {
 				margin-top: 5px;
 				margin-bottom: 5px;
@@ -31,6 +39,10 @@
 			}
 			
 			.plugin table tr td:first-child {
+				font-weight: bold;
+			}
+			
+			table tr td:first-child {
 				font-weight: bold;
 			}
 			
@@ -112,6 +124,10 @@
 								<td>{{plugin.selectedVersion.compatibleRMVersion}}</td>
 							</tr>
 							<tr>
+								<td>Tags:</td>
+								<td><span class="tag-container" ng-repeat="tag in plugin.tags">{{tag}}</span></td>
+							</tr>
+							<tr>
 								<td style="vertical-align: top;"><button ng-click="toggleScript(plugin)">Show Script</button></td>
 								<td>
 									<div class="plugin-script" ng-show="plugin.showScript">{{plugin.script}}</div>
@@ -133,58 +149,6 @@
 				</div>
 			</div>
 			<div ng-show="page.view == 'create-plugin'">
-				<h2>Create New Plugin Version</h2>
-				<div class="create-plugin-div">
-					<form id="newPluginVersionForm">
-						<table>
-							<tr>
-								<td>Base Plugin</td>
-								<td>
-									<select ng-options="p.name for p in plugins" ng-model="selectedBase" ng-change="onChangeBase(selectedBase);"></select>
-								</td>
-							</tr>
-							<tr>
-								<td>Name</td>
-								<td><input type="text" ng-model="selectedBase.name" disabled="true"></input></td>
-							</tr>
-							<tr>
-								<td>Description</td>
-								<td><textarea ng-model="selectedBase.description" disabled="true"></textarea></td>
-							</tr>
-							<tr>
-								<td>Version</td>
-								<td><input type="text" ng-model="newPluginVersion.version"></input></td>
-							</tr>
-							<tr>
-								<td>RPG Maker Version:</td>
-								<td><input type="text" ng-model="newPluginVersion.compatibleRMVersion"></input></td>
-							</tr>
-							<tr>
-								<td>Add Dependencies</td>
-								<td>
-									<select id="create-plugin-dep" ng-options="d.name for d in plugins" ng-model="newPluginVersion.selectedDependency" ng-change="onDependencyChange();"></select>
-									<select id="create-plugin-dep-version" ng-model="newPluginVersion.selectedVersion">
-										<option ng-value="$index" ng-repeat="version in newPluginVersion.selectedDependency.versions">{{version.version}}</option>
-									</select>
-									<button ng-click="onAddDependency(newPluginVersion, newPluginVersion.selectedDependency.versions[newPluginVersion.selectedVersion])">Add Dependency</button>
-								</td>
-							</tr>
-							<tr>
-								<td>Dependencies</td>
-								<td>
-									<ul>
-										<li ng-repeat="addedDependency in newPluginVersion.dependencies">{{addedDependency.name}}({{addedDependency.version}})<button ng-click="removeDependency(newPluginVersion, addedDependency);">Remove</button></li>
-									</ul>
-								</td>
-							</tr>
-							<tr>
-								<td>File:</td>
-								<td><input type="file" onChange="angular.element(this).scope().fileNameChanged(this, angular.element(this).scope().newPluginVersion);" on-read-file="loadScript($fileContent, null, newPluginVersion)"></input></td>
-							</tr>
-						</table>
-					</form>
-					<button ng-click="createPluginVersion(selectedBase, newPluginVersion, newPluginVersion.dependencies); clearForm('#newPluginVersionForm');">Create</button>
-				</div>
 				<h2>Create New Plugin</h2>
 				<div class="create-plugin-div">
 					<form id="newPluginForm">
@@ -204,6 +168,10 @@
 							<tr>
 								<td>RPG Maker Version:</td>
 								<td><input type="text" ng-model="newPlugin.initialPluginVersion.compatibleRMVersion"></input></td>
+							</tr>
+							<tr>
+								<td>Tags:</td>
+								<td><input type="text" ng-model="newPlugin.tags"></input></td>
 							</tr>
 							<tr>
 								<td>Add Dependencies</td>
@@ -233,24 +201,74 @@
 					</form>
 					<button ng-click="createPlugin(newPlugin, newPlugin.initialPluginVersion, newPlugin.dependencies); clearForm('#newPluginForm');">Create</button>
 				</div>
+				<h2>Create New Plugin Version</h2>
+				<div class="create-plugin-div">
+					<form id="newPluginVersionForm">
+						<table>
+							<tr>
+								<td>Base Plugin:</td>
+								<td>
+									<select ng-options="p.name for p in plugins" ng-model="selectedBase" ng-change="onChangeBase(selectedBase);"></select>
+								</td>
+							</tr>
+							<tr>
+								<td>Name:</td>
+								<td><input type="text" ng-model="selectedBase.name" disabled="true"></input></td>
+							</tr>
+							<tr>
+								<td>Description:</td>
+								<td><textarea ng-model="selectedBase.description" disabled="true"></textarea></td>
+							</tr>
+							<tr>
+								<td>Version:</td>
+								<td><input type="text" ng-model="newPluginVersion.version"></input></td>
+							</tr>
+							<tr>
+								<td>RPG Maker Version:</td>
+								<td><input type="text" ng-model="newPluginVersion.compatibleRMVersion"></input></td>
+							</tr>
+							<tr>
+								<td>Add Dependencies</td>
+								<td>
+									<select id="create-plugin-dep" ng-options="d.name for d in plugins" ng-model="newPluginVersion.selectedDependency" ng-change="onDependencyChange();"></select>
+									<select id="create-plugin-dep-version" ng-model="newPluginVersion.selectedVersion">
+										<option ng-value="$index" ng-repeat="version in newPluginVersion.selectedDependency.versions">{{version.version}}</option>
+									</select>
+									<button ng-click="onAddDependency(newPluginVersion, newPluginVersion.selectedDependency.versions[newPluginVersion.selectedVersion])">Add Dependency</button>
+								</td>
+							</tr>
+							<tr>
+								<td>Dependencies:</td>
+								<td>
+									<ul>
+										<li ng-repeat="addedDependency in newPluginVersion.dependencies">{{addedDependency.name}}({{addedDependency.version}})<button ng-click="removeDependency(newPluginVersion, addedDependency);">Remove</button></li>
+									</ul>
+								</td>
+							</tr>
+							<tr>
+								<td>File:</td>
+								<td><input type="file" onChange="angular.element(this).scope().fileNameChanged(this, angular.element(this).scope().newPluginVersion);" on-read-file="loadScript($fileContent, null, newPluginVersion)"></input></td>
+							</tr>
+						</table>
+					</form>
+					<button ng-click="createPluginVersion(selectedBase, newPluginVersion, newPluginVersion.dependencies); clearForm('#newPluginVersionForm');">Create</button>
+				</div>
 			</div>
 			<div ng-show="page.view == 'profile'">
 				<h2>My User</h2>
 				<table>
-					<tr><td>Username</td><td>{{accessToken.principal}}</td></tr>
+					<tr><td>Username:</td><td>{{accessToken.principal}}</td></tr>
 					<tr>
-						<td>Roles</td>
+						<td>Roles:</td>
 						<td>
-							<ul>
-								<li ng-repeat="role in accessToken.roles" value="{{role}}">{{role}}</li>
-							</ul>
+							<div ng-repeat="role in accessToken.roles" value="{{role}}">{{role}}</div>
 						</td>
 					</tr>
 				</table>
 				<h2>Change Password</h2>
 				<form id="changePasswordForm">
 					<table>
-						<tr><td>Password</td><td><input ng-model="profileForm.password1" type="password"></input></td></tr>
+						<tr><td>Password:</td><td><input ng-model="profileForm.password1" type="password"></input></td></tr>
 						<tr><td></td><td><input ng-model="profileForm.password2" type="password"></input></td></tr>
 					</table>
 				</form>
@@ -260,11 +278,11 @@
 				<h2>Create User</h2>
 				<form id="createUserForm">
 					<table>
-						<tr><td>Username</td><td><input ng-model="newUser.username" type="text"></input></td></tr>
-						<tr><td>Password</td><td><input ng-model="newUser.password1" type="password"></input></td><td><button ng-click="generatePassword(newUser)">Generate Password</button></td></tr>
+						<tr><td>Username:</td><td><input ng-model="newUser.username" type="text"></input></td></tr>
+						<tr><td>Password:</td><td><input ng-model="newUser.password1" type="password"></input></td><td><button ng-click="generatePassword(newUser)">Generate Password</button></td></tr>
 						<tr><td></td><td><input ng-model="newUser.password2" type="password"></input></td></tr>
 						<tr>
-							<td>Roles</td>
+							<td>Roles:</td>
 							<td>
 								<select multiple ng-model="newUser.roles">
 									<option ng-repeat="role in roles" value="{{role}}">{{role}}</option>
@@ -280,17 +298,17 @@
 				<form id="modifyUserForm">
 					<table>
 						<tr>
-							<td>Username</td>
+							<td>Username:</td>
 							<td>
 								<select ng-model="modUser.username" ng-change="onChangeUser(modUser)">
 									<option ng-repeat="user in users" value="{{user.username}}">{{user.username}}</option>
 								</select>
 							</td>
 						</tr>
-						<tr><td>Password</td><td><input ng-model="modUser.password1" type="password"></input></td></tr>
+						<tr><td>Password:</td><td><input ng-model="modUser.password1" type="password"></input></td></tr>
 						<tr><td></td><td><input ng-model="modUser.password2" type="password"></input></td></tr>
 						<tr>
-							<td>Roles</td>
+							<td>Roles:</td>
 							<td>
 								<select multiple ng-model="modUser.roles">
 									<option ng-repeat="role in roles" value="{{role}}">{{role}}</option>

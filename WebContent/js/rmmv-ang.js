@@ -249,10 +249,10 @@ app.controller('page-controller', function($scope, $cookies) {
 	
 	$scope.createPlugin = function(base, pluginVersion, dependencies) {
 		// Create the plugin and save it.
+		base.tags = base.tags.split(" ");
 		newPlugin = RMMV.PluginBase.create(base);
 		newPluginVersion = RMMV.Plugin.create(pluginVersion);
 		newPluginVersion.script = pluginVersion.script;
-		//newPluginVersion.filename = $scope.fileNames[0];
 		
 		if (!newPluginVersion.script) {
 			return;

@@ -18,6 +18,7 @@ RMMV.Types.PluginBase = function() {
 	plugin.dateCreated = null;
 	plugin.name = null;
 	plugin.description = null;
+	plugin.tags = [];
 	
 	plugin.refreshObject = function() {
 		return RMMV.PluginBase.Web.getBasePlugin(this.id);
@@ -40,6 +41,7 @@ RMMV.PluginBase.create = function(oplugin) {
 	plugin.dateCreated = oplugin.dateCreated;
 	plugin.name = oplugin.name;
 	plugin.description = oplugin.description;
+	plugin.tags = oplugin.tags;
 	
 	return plugin;
 };
@@ -53,6 +55,7 @@ RMMV.PluginBase.createArray = function(oplugins) {
 		plugin.dateCreated = oplugin.dateCreated;
 		plugin.name = oplugin.name;
 		plugin.description = oplugin.description;
+		plugin.tags = oplugin.tags;
 		plugins.push(plugin);
 	}
 	

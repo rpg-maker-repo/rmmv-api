@@ -32,10 +32,9 @@ public class PluginBaseService {
 	
 	public PluginBaseRO save(PluginBaseRO plugin) {
 		plugin.setDateCreated(new Date());
+		PluginBase base = dao.save(pluginBaseConverter.convertRO(plugin));
 		
-		PluginBase base = pluginBaseConverter.convertRO(plugin);
 		List<Tag> tags = new ArrayList<Tag>();
-		
 		if (plugin.getTags() != null) {
 			for (String tagString : plugin.getTags()) {
 				Tag tag = tagDao.findByName(tagString);
@@ -55,9 +54,10 @@ public class PluginBaseService {
 				tags.add(tag);
 			}
 			base.setTags(tags);
+			base = dao.update(base);
 		}
 		
-		return pluginBaseConverter.convertEntity(dao.save(base));
+		return pluginBaseConverter.convertEntity(base);
 	}
 	
 	public List<PluginBaseRO> getAll() {

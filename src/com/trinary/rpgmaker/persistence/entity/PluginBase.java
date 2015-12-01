@@ -30,7 +30,7 @@ public class PluginBase {
 	@OneToMany
 	List<Plugin> versions;
 	
-	@ManyToMany(fetch=FetchType.EAGER)
+	@ManyToMany(mappedBy="plugins", fetch=FetchType.EAGER)
 	List<Tag> tags;
 	
 	@ManyToOne

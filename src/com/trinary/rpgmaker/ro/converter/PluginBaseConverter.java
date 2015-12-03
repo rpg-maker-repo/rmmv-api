@@ -36,6 +36,9 @@ public class PluginBaseConverter extends ROConverter<PluginBaseRO, PluginBase> {
 		pluginBase.setName(entity.getName());
 		pluginBase.setDescription(entity.getDescription());
 		pluginBase.setDateCreated(entity.getDateCreated());
+		if (entity.getAuthor() != null) {
+			pluginBase.setAuthor(entity.getAuthor().getUsername());
+		}
 		
 		pluginBase.setTags(new ArrayList<String>());
 		if (entity.getTags() != null) {

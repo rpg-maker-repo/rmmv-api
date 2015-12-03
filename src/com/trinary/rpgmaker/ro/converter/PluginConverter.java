@@ -48,6 +48,9 @@ public class PluginConverter extends ROConverter<PluginRO, Plugin> {
 		}
 		ro.setVersion(entity.getVersion());
 		ro.setCompatibleRMVersion(entity.getCompatibleRMVersion());
+		if (entity.getBase() != null && entity.getBase().getAuthor() != null) {
+			ro.setAuthor(entity.getBase().getAuthor().getUsername());
+		}
 		ro.setHash(entity.getHash());
 		ro.setDateCreated(entity.getDateCreated());
 		ro.setFilename(entity.getFilename());

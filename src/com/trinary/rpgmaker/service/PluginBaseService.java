@@ -14,9 +14,11 @@ import org.apache.commons.codec.binary.Base64;
 
 import com.trinary.rpgmaker.persistence.dao.PluginBaseDao;
 import com.trinary.rpgmaker.persistence.dao.TagDao;
+import com.trinary.rpgmaker.persistence.dao.UserDao;
 import com.trinary.rpgmaker.persistence.entity.Plugin;
 import com.trinary.rpgmaker.persistence.entity.PluginBase;
 import com.trinary.rpgmaker.persistence.entity.Tag;
+import com.trinary.rpgmaker.persistence.entity.User;
 import com.trinary.rpgmaker.ro.PluginBaseRO;
 import com.trinary.rpgmaker.ro.PluginRO;
 import com.trinary.rpgmaker.ro.converter.PluginBaseConverter;
@@ -29,6 +31,7 @@ public class PluginBaseService {
 	
 	@EJB PluginBaseDao dao;
 	@EJB TagDao tagDao;
+	@EJB UserDao userDao;
 	
 	public PluginBaseRO save(PluginBaseRO plugin) {
 		plugin.setDateCreated(new Date());
@@ -60,16 +63,25 @@ public class PluginBaseService {
 		return pluginBaseConverter.convertEntity(base);
 	}
 	
-	public List<PluginBaseRO> getAll() {
-		return getAll(null, null, null, null);
+	public PluginBaseRO setOwner(PluginBaseRO plugin, Long userId) {
+		PluginBase base = dao.get(plugin.getId());
+		User owner = userDao.get(userId);
+		base.setAuthor(owner);
+		base = dao.update(base);
+		userDao.addPlugin(owner.getUsername(), base.getId());
+		return pluginBaseConverter.convertEntity(base);
 	}
 	
-	public List<PluginBaseRO> getAll(Integer page, Integer pageSize, String search, List<String> tags) {
+	public List<PluginBaseRO> getAll(Integer page, Integer pageSize, String search) {
 		if (search == null) {
 			return pluginBaseConverter.convertEntityList(dao.getAll(page, pageSize));
 		}
 		
-		return pluginBaseConverter.convertEntityList(dao.getAll(page, pageSize, search));
+		return pluginBaseConverter.convertEntityList(dao.search(search, page, pageSize));
+	}
+	
+	public Long getCount() {
+		return dao.getCount();
 	}
 	
 	public PluginBaseRO getById(Long id) {
@@ -103,6 +115,10 @@ public class PluginBaseService {
 		
 		Plugin version = pluginConverter.convertRO(versionRo);
 		return pluginConverter.convertEntity(dao.addVersion(id, version));
+	}
+	
+	public Long getVersionCount(Long id) {
+		return dao.getVersionCount(id);
 	}
 	
 	public PluginBaseRO addTags(Long id, List<String> tagStrings) {

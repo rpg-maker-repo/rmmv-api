@@ -127,12 +127,15 @@ app.controller('page-controller', function($scope, $cookies) {
 			return;
 		}
 		
-		newUser = RMMV.User.Web.addRoles(newUser, roles);
-		
-		if (!newUser) {
-			alert("Role add failed!");
-			$scope.generatedPassword = "";
-			return;
+		for (var i = 0; i < roles.length; i++) {
+			var role = roles[i];
+			newUser = RMMV.User.Web.addRole(newUser, role);
+			
+			if (!newUser) {
+				alert("Role add failed!");
+				$scope.generatedPassword = "";
+				return;
+			}
 		}
 		
 		$scope.generatedPassword = "";

@@ -22,6 +22,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
+import com.trinary.rpgmaker.persistence.entity.User;
 import com.trinary.rpgmaker.ro.PluginBaseRO;
 import com.trinary.rpgmaker.ro.PluginRO;
 import com.trinary.rpgmaker.service.PluginBaseService;
@@ -45,9 +46,12 @@ public class PluginBaseResource {
 	public Response getAll(
 			@QueryParam("page") Integer page, 
 			@QueryParam("pageSize") Integer pageSize, 
-			@QueryParam("search") String search,
-			@QueryParam("tag") List<String> tags) {
-		return Response.ok(service.getAll(page, pageSize, search, tags)).build();
+			@QueryParam("search") String search) {
+		Long count = service.getCount();
+		return Response
+				.ok(service.getAll(page, pageSize, search))
+				.header("record-count", count)
+				.build();
 	}
 	
 	@POST
@@ -60,7 +64,10 @@ public class PluginBaseResource {
 	})
 	@RolesAllowed("DEVELOPER")
 	public Response create(PluginBaseRO base) {
-		return Response.ok(service.save(base)).build();
+		User owner = (User)securityContext.getUserPrincipal();
+		base = service.save(base);
+		base = service.setOwner(base, owner.getId());
+		return Response.ok(base).build();
 	}
 	
 	@GET
@@ -88,11 +95,19 @@ public class PluginBaseResource {
 			return Response.ok(service.getLatestVersions(id)).build();
 		}
 		
+		Long count = service.getVersionCount(id);
+		
 		if (page != null) {
-			return Response.ok(service.getVersions(id, page, pageSize)).build();
+			return Response
+					.ok(service.getVersions(id, page, pageSize))
+					.header("record-count", count)
+					.build();
 		}
 		
-		return Response.ok(service.getVersions(id)).build();
+		return Response
+				.ok(service.getVersions(id))
+				.header("record-count", count)
+				.build();
 	}
 	
 	@POST

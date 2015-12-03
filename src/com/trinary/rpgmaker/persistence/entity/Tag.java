@@ -9,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 
+import org.hibernate.search.annotations.Field;
+
 @Entity
 public class Tag {
 	@Id
@@ -16,6 +18,7 @@ public class Tag {
 	long id;
 	
 	@Column
+	@Field
 	String value;
 	
 	@ManyToMany(fetch=FetchType.EAGER)

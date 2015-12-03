@@ -5,14 +5,35 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.apache.solr.analysis.LowerCaseFilterFactory;
+import org.apache.solr.analysis.SnowballPorterFilterFactory;
+import org.apache.solr.analysis.StandardTokenizerFactory;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+import org.hibernate.search.annotations.AnalyzerDef;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.annotations.Parameter;
+import org.hibernate.search.annotations.TokenFilterDef;
+import org.hibernate.search.annotations.TokenizerDef;
+
 @Entity
+@Indexed
+@AnalyzerDef(name = "customanalyzer",
+tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
+filters = {
+  @TokenFilterDef(factory = LowerCaseFilterFactory.class),
+  @TokenFilterDef(factory = SnowballPorterFilterFactory.class, params = {
+    @Parameter(name = "language", value = "English")
+  })
+})
 public class PluginBase {
 	@Id
 	@GeneratedValue
@@ -22,15 +43,19 @@ public class PluginBase {
 	Date dateCreated;
 	
 	@Column
+	@Field
 	String name;
 	
 	@Column
+	@Field
 	String description;
 	
 	@OneToMany
 	List<Plugin> versions;
 	
-	@ManyToMany(mappedBy="plugins", fetch=FetchType.EAGER)
+	@ManyToMany(mappedBy="plugins")
+	@IndexedEmbedded
+	@LazyCollection(LazyCollectionOption.FALSE)
 	List<Tag> tags;
 	
 	@ManyToOne

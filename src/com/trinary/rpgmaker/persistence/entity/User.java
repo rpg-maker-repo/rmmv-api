@@ -35,7 +35,7 @@ public class User implements Principal {
 	List<Role> roles;
 	
 	@OneToMany
-	List<Plugin> plugins;
+	List<PluginBase> plugins;
 
 	/**
 	 * @return the id
@@ -110,14 +110,14 @@ public class User implements Principal {
 	/**
 	 * @return the plugins
 	 */
-	public List<Plugin> getPlugins() {
+	public List<PluginBase> getPlugins() {
 		return plugins;
 	}
 
 	/**
 	 * @param plugins the plugins to set
 	 */
-	public void setPlugins(List<Plugin> plugins) {
+	public void setPlugins(List<PluginBase> plugins) {
 		this.plugins = plugins;
 	}
 

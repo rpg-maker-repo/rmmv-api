@@ -5,10 +5,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 
 import com.trinary.rpgmaker.persistence.entity.Tag;
 
 @Stateless
+@Transactional
 public class TagDao extends GenericDao<Tag, Long> {
 	@PersistenceContext
 	EntityManager em;

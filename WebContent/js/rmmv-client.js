@@ -16,6 +16,7 @@ RMMV.Types.PluginBase = function() {
 	var plugin = {};
 	plugin.id = null;
 	plugin.dateCreated = null;
+	plugin.author = null;
 	plugin.name = null;
 	plugin.description = null;
 	plugin.tags = [];
@@ -39,6 +40,7 @@ RMMV.PluginBase.create = function(oplugin) {
 	var plugin = RMMV.Types.PluginBase();
 	plugin.id = oplugin.id;
 	plugin.dateCreated = oplugin.dateCreated;
+	plugin.author = oplugin.author;
 	plugin.name = oplugin.name;
 	plugin.description = oplugin.description;
 	plugin.tags = oplugin.tags;
@@ -53,6 +55,7 @@ RMMV.PluginBase.createArray = function(oplugins) {
 		var plugin = RMMV.Types.PluginBase();
 		plugin.id = oplugin.id;
 		plugin.dateCreated = oplugin.dateCreated;
+		plugin.author = oplugin.author;
 		plugin.name = oplugin.name;
 		plugin.description = oplugin.description;
 		plugin.tags = oplugin.tags;
@@ -353,7 +356,7 @@ RMMV.User.Web.createUser = function(user) {
 	return newUser;
 };
 
-RMMV.User.Web.addRoles = function(user, roles) {
+RMMV.User.Web.addRole = function(user, role) {
 	var newUser = null;
 	
 	$.ajax({
@@ -362,7 +365,7 @@ RMMV.User.Web.addRoles = function(user, roles) {
 		contentType: "application/json",
 		url: RMMV.Web.baseUrl + "/v1/user/" + user.username + "/role",
 		dataType: "json",
-		data: JSON.stringify(roles),
+		data: role,
 		headers: {
 			"Authorization": "Bearer " + RMMV.Web.authString
 		},

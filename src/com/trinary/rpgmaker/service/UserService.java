@@ -18,8 +18,10 @@ import com.trinary.rpgmaker.persistence.dao.UserDao;
 import com.trinary.rpgmaker.persistence.entity.Role;
 import com.trinary.rpgmaker.persistence.entity.User;
 import com.trinary.rpgmaker.ro.AuthenticationRO;
+import com.trinary.rpgmaker.ro.PluginBaseRO;
 import com.trinary.rpgmaker.ro.TokenRO;
 import com.trinary.rpgmaker.ro.UserRO;
+import com.trinary.rpgmaker.ro.converter.PluginBaseConverter;
 import com.trinary.rpgmaker.ro.converter.TokenConverter;
 import com.trinary.rpgmaker.ro.converter.UserConverter;
 import com.trinary.rpgmaker.security.token.Token;
@@ -34,6 +36,7 @@ public class UserService {
 	@Inject TokenManager tokenManager;
 	@Inject UserConverter userConverter;
 	@Inject TokenConverter tokenConverter;
+	@Inject PluginBaseConverter pluginConverter;
 	
 	public List<UserRO> getAll() {
 		return userConverter.convertEntityList(userDao.getAll());
@@ -170,5 +173,15 @@ public class UserService {
 		User user = userDao.getUserByName(username);
 		user.setPassword(hashPassword(userRo.getPassword(), user.getSalt()));
 		return userConverter.convertEntity(userDao.update(user));
+	}
+
+	// TODO Create get plugins by user
+	public List<PluginBaseRO> getPlugins(String username, Integer page, Integer pageSize) {
+		return pluginConverter.convertEntityList(userDao.getPlugins(username, page, pageSize));
+	}
+
+	// TODO Create update user roles
+	public UserRO updateRoles(String username, List<String> roleStrings) {
+		return null;
 	}
 }

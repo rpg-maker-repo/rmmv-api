@@ -7,7 +7,7 @@ RMMV.Plugin.Web = {};
 RMMV.User = {};
 RMMV.User.Web = {};
 RMMV.Web = {};
-RMMV.Web.baseUrl = "/rmmv-api";
+RMMV.Web.baseUrl = "https://deusprogrammer.no-ip.org/rmmv-api";
 RMMV.Web.authString = "";
 
 // Plugin Base

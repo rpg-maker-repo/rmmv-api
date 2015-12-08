@@ -1,328 +1,293 @@
-<html>
-	<head>
-		<title>RMMV Asset Repository Test Harness</title>
-		<style>
-			.tag-container {
-				padding: 2px;
-				margin-right: 5px;
-				border-radius: 5px;
-				background-color: gray;
-				color: white;
-			}
-			
-			.plugin, .dependency {
-				margin-top: 5px;
-				margin-bottom: 5px;
-				padding-left: 10px;
-				padding-right: 10px;
-				border: 1px solid black;
-			}
-			
-			.dependency {
-				background-color: gray;
-				color: white;
-			}
-			
-			.plugin-script {
-				background-color: blue;
-				color: white;
-				width: 800px;
-				min-height: 200px;
-				padding: 5px;
-				font-family: monospace;
-    			white-space: pre-wrap;
-			}
-			
-			.plugin-deps {
-				margin-left: 20px;
-				margin-right: 30px;
-			}
-			
-			.plugin table tr td:first-child {
-				font-weight: bold;
-			}
-			
-			table tr td:first-child {
-				font-weight: bold;
-			}
-			
-			table.dependency-table {
-				color: white;
-			}
-			
-			ul.tabs > li {
-				display: table-cell;
-				width: 100px;
-				height: 50px;
-				background-color: gray;
-				border-left: 10px solid white;
-				color: white;
-				vertical-align: middle;
-				text-align: center;
-				cursor: pointer;
-			}
-			
-			.indented {
-				margin-left: 10px;
-			}
-			
-			ul.tabs > li:hover, .tab-selected {
-				background-color: blue;
-			}
-		</style>
-		<script src="https://code.angularjs.org/1.4.7/angular.min.js"></script>
-		<script
-			src="https://code.angularjs.org/1.4.7/angular-route.min.js"></script>
-		<script
-			src="https://code.angularjs.org/1.4.7/angular-resource.min.js"></script>
-		<script
-			src="https://code.angularjs.org/1.4.7/angular-cookies.min.js"></script>
-		<script src="https://code.jquery.com/jquery-2.1.4.js"></script>
-		<script src="js/rmmv-client.js"></script>
-		<script src="js/rmmv-ang.js"></script>
-	</head>
-	<body>
-		<div class="banner"><h1>RMMV Asset Repository Test Harness</h1></div>
-		<div ng-app="rmmv-ui" ng-controller="page-controller">
-			<div class="menu">
-				<div ng-show="!isAuthenticated" class="login">
-					<input type="text" placeholder="username" ng-model="authentication.username"></input>
-					<input type="password" placeholder="password" ng-model="authentication.password"></input>
-					<button ng-click="authenticate(authentication);">Login</button>
-				</div>
-				<div ng-show="isAuthenticated" class="login">
-					Welcome {{loggedInUser}}.&nbsp;<button ng-click="deauthenticate();">Logout</button>
-				</div>
-				<div class="navbar">
-					<ul class="tabs">
-						<li ng-click="page.view = 'view-plugins'">View Plugins</li>
-						<li ng-show="hasDeveloper" ng-click="page.view = 'create-plugin'">Create Plugin</li>
-						<li ng-show="isAuthenticated" ng-click="page.view = 'profile'">My Profile</li>
-						<li ng-show="hasSuperUser" ng-click="page.view = 'create-user'">Admin</li>
-					</ul>
-				</div>
-			</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-			<div ng-show="page.view == 'view-plugins'">
-				<h2>All Plugins</h2>
-				<div class="plugin-list">
-					<div id="plugin-{{plugin.id}}" class="plugin" ng-repeat="plugin in plugins">
-						<h3>{{plugin.name}}</h3>
-						<table class="plugin-table indented">
-							<tr>
-								<td>Author:</td>
-								<td>{{plugin.author}}</td>
-							</tr>
-							<tr>
-								<td>Description:</td>
-								<td>{{plugin.description}}</td>
-							</tr>
-							<tr>
-								<td>Version:</td>
-								<td>
-									<select ng-options="v.version for v in plugin.versions" ng-model="plugin.selectedVersion" ng-change="onChangeVersion(plugin);"></select>
-								</td>
-							</tr>
-							<tr>
-								<td>RPG Maker Version:</td>
-								<td>{{plugin.selectedVersion.compatibleRMVersion}}</td>
-							</tr>
-							<tr>
-								<td>Tags:</td>
-								<td><span class="tag-container" ng-repeat="tag in plugin.tags">{{tag}}</span></td>
-							</tr>
-							<tr>
-								<td style="vertical-align: top;"><button ng-click="toggleScript(plugin)">Show Script</button></td>
-								<td>
-									<div class="plugin-script" ng-show="plugin.showScript">{{plugin.script}}</div>
-								</td>
-							</tr>
-						</table>
-						<div id="plugin-{{plugin.id}}-deps" class="plugin-deps">
-							<h3 ng-show="plugin.selectedVersion.dependencies.length > 0">Dependencies</h3>
-							<div id="dep-{{dep.id}}" class="dependency" ng-repeat="dep in plugin.selectedVersion.dependencies">
-								<h3>{{dep.name}}</h3>
-								<table class="dependency-table indented">
-									<tr><td>Description:</td><td>{{dep.description}}</td></tr>
-									<tr><td>Version:</td><td>{{dep.version}}</td></tr>
-									<tr><td>RPG Maker Version:</td><td>{{dep.compatibleRMVersion}}</td></tr>
-								</table>
-							</div>
+	<meta name="description" content="RPG Maker MV Assets Repository">
+	<meta name="author" content="Michael Main <deusprogrammer@gmail.com>, Filipe Oliveira <contato@fmoliveira.com.br>">
+	<!--<link rel="icon" href="favicon.ico">-->
+
+	<title>RMMV Assets Repository</title>
+
+	<link rel="stylesheet" href="css/flatly.min.css" />
+	<link rel="stylesheet" href="css/custom.css" />
+	<link rel="stylesheet" href="css/plugins.css" />
+
+	<script src="https://code.angularjs.org/1.4.7/angular.min.js"></script>
+	<script	src="https://code.angularjs.org/1.4.7/angular-route.min.js"></script>
+	<script	src="https://code.angularjs.org/1.4.7/angular-resource.min.js"></script>
+	<script	src="https://code.angularjs.org/1.4.7/angular-cookies.min.js"></script>
+	<script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+	<script src="js/rmmv-client.js"></script>
+	<script src="js/rmmv-ang.js"></script>
+</head>
+<body ng-app="rmmv-ui" ng-controller="page-controller">
+
+	<nav class="navbar navbar-default navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#">Assets Repository</a>
+			</div>
+			<ul class="nav navbar-nav">
+				<li><a href="#" ng-click="page.view = 'view-plugins'">View Plugins</a></li>
+				<li ng-if="hasDeveloper"><a href="#" ng-click="page.view = 'create-plugin'">Create Plugin</a></li>
+				<li ng-if="isAuthenticated"><a href="#" ng-click="page.view = 'profile'">My Profile</a></li>
+				<li ng-if="hasSuperUser"><a href="#" ng-click="page.view = 'create-user'">Admin</a></li>
+			</ul>
+			<form class="navbar-form navbar-right" ng-if="!isAuthenticated">
+				<div class="form-group">
+					<input type="text" placeholder="Username" class="form-control" ng-model="authentication.username">
+				</div>
+				<div class="form-group">
+					<input type="password" placeholder="Password" class="form-control" ng-model="authentication.password">
+				</div>
+				<button type="button" class="btn btn-success" ng-click="authenticate(authentication);">Login</button>
+			</form>
+			<form class="navbar-form navbar-right" ng-if="isAuthenticated">
+				<span class="label label-primary"><i class="glyphicon glyphicon-user"></i> Welcome {{loggedInUser}}!</span>
+				<button type="button" class="btn btn-default" ng-click="deauthenticate();">Logout</button>
+			</form>
+		</div>
+	</nav>
+
+	<div class="jumbotron">
+		<div class="container">
+			<h1>RMMV Assets Repository</h1>
+		</div>
+	</div>
+
+	<div class="container">
+
+		<div ng-show="page.view == 'view-plugins'">
+			<h2>All Plugins</h2>
+			<div class="plugin-list">
+				<div id="plugin-{{plugin.id}}" class="plugin" ng-repeat="plugin in plugins">
+					<h3>{{plugin.name}}</h3>
+					<table class="plugin-table indented">
+						<tr>
+							<td>Author:</td>
+							<td>{{plugin.author}}</td>
+						</tr>
+						<tr>
+							<td>Description:</td>
+							<td>{{plugin.description}}</td>
+						</tr>
+						<tr>
+							<td>Version:</td>
+							<td>
+								<select ng-options="v.version for v in plugin.versions" ng-model="plugin.selectedVersion" ng-change="onChangeVersion(plugin);"></select>
+							</td>
+						</tr>
+						<tr>
+							<td>RPG Maker Version:</td>
+							<td>{{plugin.selectedVersion.compatibleRMVersion}}</td>
+						</tr>
+						<tr>
+							<td>Tags:</td>
+							<td><span class="tag-container" ng-repeat="tag in plugin.tags">{{tag}}</span></td>
+						</tr>
+						<tr>
+							<td style="vertical-align: top;"><button ng-click="toggleScript(plugin)">Show Script</button></td>
+							<td>
+								<div class="plugin-script" ng-show="plugin.showScript">{{plugin.script}}</div>
+							</td>
+						</tr>
+					</table>
+					<div id="plugin-{{plugin.id}}-deps" class="plugin-deps">
+						<h3 ng-show="plugin.selectedVersion.dependencies.length > 0">Dependencies</h3>
+						<div id="dep-{{dep.id}}" class="dependency" ng-repeat="dep in plugin.selectedVersion.dependencies">
+							<h3>{{dep.name}}</h3>
+							<table class="dependency-table indented">
+								<tr><td>Description:</td><td>{{dep.description}}</td></tr>
+								<tr><td>Version:</td><td>{{dep.version}}</td></tr>
+								<tr><td>RPG Maker Version:</td><td>{{dep.compatibleRMVersion}}</td></tr>
+							</table>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div ng-show="page.view == 'create-plugin'">
-				<h2>Create New Plugin</h2>
-				<div class="create-plugin-div">
-					<form id="newPluginForm">
-						<table>
-							<tr>
-								<td>Name</td>
-								<td><input type="text" ng-model="newPlugin.name"></input></td>
-							</tr>
-							<tr>
-								<td>Description</td>
-								<td><textarea ng-model="newPlugin.description"></textarea></td>
-							</tr>
-							<tr>
-								<td>Initial Version</td>
-								<td><input type="text" ng-model="newPlugin.initialPluginVersion.version"></input></td>
-							</tr>
-							<tr>
-								<td>RPG Maker Version:</td>
-								<td><input type="text" ng-model="newPlugin.initialPluginVersion.compatibleRMVersion"></input></td>
-							</tr>
-							<tr>
-								<td>Tags:</td>
-								<td><input type="text" ng-model="newPlugin.tags"></input></td>
-							</tr>
-							<tr>
-								<td>Add Dependencies</td>
-								<td>
-									<select id="create-plugin-dep" ng-options="d.name for d in plugins" ng-model="newPlugin.selectedDependency" ng-change="onDependencyChange();"></select>
-									<select id="create-plugin-dep-version" ng-model="newPlugin.selectedVersion">
-										<option ng-value="$index"  ng-repeat="version in newPlugin.selectedDependency.versions">{{version.version}}</option>
-									</select>
-									<button ng-click="onAddDependency(newPlugin, newPlugin.selectedDependency.versions[newPlugin.selectedVersion])">Add Dependency</button>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									Dependencies
-								</td>
-								<td>
-									<ul>
-										<li ng-repeat="addedDependency in newPlugin.dependencies">{{addedDependency.name}}({{addedDependency.version}})<button ng-click="removeDependency(newPlugin, addedDependency);">Remove</button></li>
-									</ul>
-								</td>
-							</tr>
-							<tr>
-								<td>File:</td>
-								<td><input type="file" onChange="angular.element(this).scope().fileNameChanged(this, angular.element(this).scope().newPlugin.initialPluginVersion);" on-read-file="loadScript($fileContent, newPlugin, newPlugin.initialPluginVersion)"></input></td>
-							</tr>
-						</table>
-					</form>
-					<button ng-click="createPlugin(newPlugin, newPlugin.initialPluginVersion, newPlugin.dependencies); clearForm('#newPluginForm');">Create</button>
-				</div>
-				<h2>Create New Plugin Version</h2>
-				<div class="create-plugin-div">
-					<form id="newPluginVersionForm">
-						<table>
-							<tr>
-								<td>Base Plugin:</td>
-								<td>
-									<select ng-options="p.name for p in plugins" ng-model="selectedBase" ng-change="onChangeBase(selectedBase);"></select>
-								</td>
-							</tr>
-							<tr>
-								<td>Name:</td>
-								<td><input type="text" ng-model="selectedBase.name" disabled="true"></input></td>
-							</tr>
-							<tr>
-								<td>Description:</td>
-								<td><textarea ng-model="selectedBase.description" disabled="true"></textarea></td>
-							</tr>
-							<tr>
-								<td>Version:</td>
-								<td><input type="text" ng-model="newPluginVersion.version"></input></td>
-							</tr>
-							<tr>
-								<td>RPG Maker Version:</td>
-								<td><input type="text" ng-model="newPluginVersion.compatibleRMVersion"></input></td>
-							</tr>
-							<tr>
-								<td>Add Dependencies</td>
-								<td>
-									<select id="create-plugin-dep" ng-options="d.name for d in plugins" ng-model="newPluginVersion.selectedDependency" ng-change="onDependencyChange();"></select>
-									<select id="create-plugin-dep-version" ng-model="newPluginVersion.selectedVersion">
-										<option ng-value="$index" ng-repeat="version in newPluginVersion.selectedDependency.versions">{{version.version}}</option>
-									</select>
-									<button ng-click="onAddDependency(newPluginVersion, newPluginVersion.selectedDependency.versions[newPluginVersion.selectedVersion])">Add Dependency</button>
-								</td>
-							</tr>
-							<tr>
-								<td>Dependencies:</td>
-								<td>
-									<ul>
-										<li ng-repeat="addedDependency in newPluginVersion.dependencies">{{addedDependency.name}}({{addedDependency.version}})<button ng-click="removeDependency(newPluginVersion, addedDependency);">Remove</button></li>
-									</ul>
-								</td>
-							</tr>
-							<tr>
-								<td>File:</td>
-								<td><input type="file" onChange="angular.element(this).scope().fileNameChanged(this, angular.element(this).scope().newPluginVersion);" on-read-file="loadScript($fileContent, null, newPluginVersion)"></input></td>
-							</tr>
-						</table>
-					</form>
-					<button ng-click="createPluginVersion(selectedBase, newPluginVersion, newPluginVersion.dependencies); clearForm('#newPluginVersionForm');">Create</button>
-				</div>
+		</div>
+		<div ng-show="page.view == 'create-plugin'">
+			<h2>Create New Plugin</h2>
+			<div class="create-plugin-div">
+				<form id="newPluginForm">
+					<table>
+						<tr>
+							<td>Name</td>
+							<td><input type="text" ng-model="newPlugin.name"></input></td>
+						</tr>
+						<tr>
+							<td>Description</td>
+							<td><textarea ng-model="newPlugin.description"></textarea></td>
+						</tr>
+						<tr>
+							<td>Initial Version</td>
+							<td><input type="text" ng-model="newPlugin.initialPluginVersion.version"></input></td>
+						</tr>
+						<tr>
+							<td>RPG Maker Version:</td>
+							<td><input type="text" ng-model="newPlugin.initialPluginVersion.compatibleRMVersion"></input></td>
+						</tr>
+						<tr>
+							<td>Tags:</td>
+							<td><input type="text" ng-model="newPlugin.tags"></input></td>
+						</tr>
+						<tr>
+							<td>Add Dependencies</td>
+							<td>
+								<select id="create-plugin-dep" ng-options="d.name for d in plugins" ng-model="newPlugin.selectedDependency" ng-change="onDependencyChange();"></select>
+								<select id="create-plugin-dep-version" ng-model="newPlugin.selectedVersion">
+									<option ng-value="$index"  ng-repeat="version in newPlugin.selectedDependency.versions">{{version.version}}</option>
+								</select>
+								<button ng-click="onAddDependency(newPlugin, newPlugin.selectedDependency.versions[newPlugin.selectedVersion])">Add Dependency</button>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								Dependencies
+							</td>
+							<td>
+								<ul>
+									<li ng-repeat="addedDependency in newPlugin.dependencies">{{addedDependency.name}}({{addedDependency.version}})<button ng-click="removeDependency(newPlugin, addedDependency);">Remove</button></li>
+								</ul>
+							</td>
+						</tr>
+						<tr>
+							<td>File:</td>
+							<td><input type="file" onChange="angular.element(this).scope().fileNameChanged(this, angular.element(this).scope().newPlugin.initialPluginVersion);" on-read-file="loadScript($fileContent, newPlugin, newPlugin.initialPluginVersion)"></input></td>
+						</tr>
+					</table>
+				</form>
+				<button ng-click="createPlugin(newPlugin, newPlugin.initialPluginVersion, newPlugin.dependencies); clearForm('#newPluginForm');">Create</button>
 			</div>
-			<div ng-show="page.view == 'profile'">
-				<h2>My User</h2>
+			<h2>Create New Plugin Version</h2>
+			<div class="create-plugin-div">
+				<form id="newPluginVersionForm">
+					<table>
+						<tr>
+							<td>Base Plugin:</td>
+							<td>
+								<select ng-options="p.name for p in plugins" ng-model="selectedBase" ng-change="onChangeBase(selectedBase);"></select>
+							</td>
+						</tr>
+						<tr>
+							<td>Name:</td>
+							<td><input type="text" ng-model="selectedBase.name" disabled="true"></input></td>
+						</tr>
+						<tr>
+							<td>Description:</td>
+							<td><textarea ng-model="selectedBase.description" disabled="true"></textarea></td>
+						</tr>
+						<tr>
+							<td>Version:</td>
+							<td><input type="text" ng-model="newPluginVersion.version"></input></td>
+						</tr>
+						<tr>
+							<td>RPG Maker Version:</td>
+							<td><input type="text" ng-model="newPluginVersion.compatibleRMVersion"></input></td>
+						</tr>
+						<tr>
+							<td>Add Dependencies</td>
+							<td>
+								<select id="create-plugin-dep" ng-options="d.name for d in plugins" ng-model="newPluginVersion.selectedDependency" ng-change="onDependencyChange();"></select>
+								<select id="create-plugin-dep-version" ng-model="newPluginVersion.selectedVersion">
+									<option ng-value="$index" ng-repeat="version in newPluginVersion.selectedDependency.versions">{{version.version}}</option>
+								</select>
+								<button ng-click="onAddDependency(newPluginVersion, newPluginVersion.selectedDependency.versions[newPluginVersion.selectedVersion])">Add Dependency</button>
+							</td>
+						</tr>
+						<tr>
+							<td>Dependencies:</td>
+							<td>
+								<ul>
+									<li ng-repeat="addedDependency in newPluginVersion.dependencies">{{addedDependency.name}}({{addedDependency.version}})<button ng-click="removeDependency(newPluginVersion, addedDependency);">Remove</button></li>
+								</ul>
+							</td>
+						</tr>
+						<tr>
+							<td>File:</td>
+							<td><input type="file" onChange="angular.element(this).scope().fileNameChanged(this, angular.element(this).scope().newPluginVersion);" on-read-file="loadScript($fileContent, null, newPluginVersion)"></input></td>
+						</tr>
+					</table>
+				</form>
+				<button ng-click="createPluginVersion(selectedBase, newPluginVersion, newPluginVersion.dependencies); clearForm('#newPluginVersionForm');">Create</button>
+			</div>
+		</div>
+		<div ng-show="page.view == 'profile'">
+			<h2>My User</h2>
+			<table>
+				<tr><td>Username:</td><td>{{accessToken.principal}}</td></tr>
+				<tr>
+					<td>Roles:</td>
+					<td>
+						<div ng-repeat="role in accessToken.roles" value="{{role}}">{{role}}</div>
+					</td>
+				</tr>
+			</table>
+			<h2>Change Password</h2>
+			<form id="changePasswordForm">
 				<table>
-					<tr><td>Username:</td><td>{{accessToken.principal}}</td></tr>
+					<tr><td>Password:</td><td><input ng-model="profileForm.password1" type="password"></input></td></tr>
+					<tr><td></td><td><input ng-model="profileForm.password2" type="password"></input></td></tr>
+				</table>
+			</form>
+			<button ng-click="changePassword(profileForm); clearForm('#changePasswordForm');">Change Password</button>
+		</div>
+		<div ng-show="page.view == 'create-user'">
+			<h2>Create User</h2>
+			<form id="createUserForm">
+				<table>
+					<tr><td>Username:</td><td><input ng-model="newUser.username" type="text"></input></td></tr>
+					<tr><td>Password:</td><td><input ng-model="newUser.password1" type="password"></input></td><td><button ng-click="generatePassword(newUser)">Generate Password</button></td></tr>
+					<tr><td></td><td><input ng-model="newUser.password2" type="password"></input></td></tr>
 					<tr>
 						<td>Roles:</td>
 						<td>
-							<div ng-repeat="role in accessToken.roles" value="{{role}}">{{role}}</div>
+							<select multiple ng-model="newUser.roles">
+								<option ng-repeat="role in roles" value="{{role}}">{{role}}</option>
+							</select>
+						</td>
+					</tr>
+					<tr><td>Generated Password:</td><td>{{generatedPassword}}</td></tr>
+				</table>
+			</form>
+			<button ng-click="createUser(newUser); clearForm('#createUserForm');">Create User</button>
+
+			<h2>Modify User</h2>
+			<form id="modifyUserForm">
+				<table>
+					<tr>
+						<td>Username:</td>
+						<td>
+							<select ng-model="modUser.username" ng-change="onChangeUser(modUser)">
+								<option ng-repeat="user in users" value="{{user.username}}">{{user.username}}</option>
+							</select>
+						</td>
+					</tr>
+					<tr><td>Password:</td><td><input ng-model="modUser.password1" type="password"></input></td></tr>
+					<tr><td></td><td><input ng-model="modUser.password2" type="password"></input></td></tr>
+					<tr>
+						<td>Roles:</td>
+						<td>
+							<select multiple ng-model="modUser.roles">
+								<option ng-repeat="role in roles" value="{{role}}">{{role}}</option>
+							</select>
 						</td>
 					</tr>
 				</table>
-				<h2>Change Password</h2>
-				<form id="changePasswordForm">
-					<table>
-						<tr><td>Password:</td><td><input ng-model="profileForm.password1" type="password"></input></td></tr>
-						<tr><td></td><td><input ng-model="profileForm.password2" type="password"></input></td></tr>
-					</table>
-				</form>
-				<button ng-click="changePassword(profileForm); clearForm('#changePasswordForm');">Change Password</button>
-			</div>
-			<div ng-show="page.view == 'create-user'">
-				<h2>Create User</h2>
-				<form id="createUserForm">
-					<table>
-						<tr><td>Username:</td><td><input ng-model="newUser.username" type="text"></input></td></tr>
-						<tr><td>Password:</td><td><input ng-model="newUser.password1" type="password"></input></td><td><button ng-click="generatePassword(newUser)">Generate Password</button></td></tr>
-						<tr><td></td><td><input ng-model="newUser.password2" type="password"></input></td></tr>
-						<tr>
-							<td>Roles:</td>
-							<td>
-								<select multiple ng-model="newUser.roles">
-									<option ng-repeat="role in roles" value="{{role}}">{{role}}</option>
-								</select>
-							</td>
-						</tr>
-						<tr><td>Generated Password:</td><td>{{generatedPassword}}</td></tr>
-					</table>
-				</form>
-				<button ng-click="createUser(newUser); clearForm('#createUserForm');">Create User</button>
-				
-				<h2>Modify User</h2>
-				<form id="modifyUserForm">
-					<table>
-						<tr>
-							<td>Username:</td>
-							<td>
-								<select ng-model="modUser.username" ng-change="onChangeUser(modUser)">
-									<option ng-repeat="user in users" value="{{user.username}}">{{user.username}}</option>
-								</select>
-							</td>
-						</tr>
-						<tr><td>Password:</td><td><input ng-model="modUser.password1" type="password"></input></td></tr>
-						<tr><td></td><td><input ng-model="modUser.password2" type="password"></input></td></tr>
-						<tr>
-							<td>Roles:</td>
-							<td>
-								<select multiple ng-model="modUser.roles">
-									<option ng-repeat="role in roles" value="{{role}}">{{role}}</option>
-								</select>
-							</td>
-						</tr>
-					</table>
-				</form>
-				<button ng-click="modifyUser(modUser); clearForm('#modifyUserForm');">Create User</button>
-			</div>
+			</form>
+			<button ng-click="modifyUser(modUser); clearForm('#modifyUserForm');">Create User</button>
 		</div>
-	</body>
+
+	</div>
+
+</body>
 </html>

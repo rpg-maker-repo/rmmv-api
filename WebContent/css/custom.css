@@ -1,0 +1,11 @@
+body
+{
+	padding-top: 50px;
+	overflow-y: scroll;
+}
+
+.starter-template
+{
+	padding: 40px 15px;
+	text-align: center;
+}

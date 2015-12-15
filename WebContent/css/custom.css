@@ -9,3 +9,8 @@ body
 	padding: 40px 15px;
 	text-align: center;
 }
+
+.tags > .label
+{
+	margin-right: 4px;
+}

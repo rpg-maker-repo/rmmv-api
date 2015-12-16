@@ -1,0 +1,21 @@
+.page-turner-container {
+	text-align: center;
+}
+
+.page-turner:disabled {
+	color: black;
+}
+
+.page-numbers span {
+	padding: 2px;
+	cursor: pointer;
+}
+
+.page-numbers span.selected {
+	color: #4B5D7B;
+	cursor: default;
+}
+
+input[type=number].page-turner {
+	width: 50px;
+}

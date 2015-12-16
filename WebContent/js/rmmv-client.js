@@ -7,7 +7,7 @@ RMMV.Plugin.Web = {};
 RMMV.User = {};
 RMMV.User.Web = {};
 RMMV.Web = {};
-RMMV.Web.baseUrl = "https://deusprogrammer.no-ip.org/rmmv-api";
+RMMV.Web.baseUrl = "/rmmv-api";
 RMMV.Web.authString = "";
 
 // Plugin Base
@@ -101,14 +101,24 @@ RMMV.PluginBase.Web.getPluginBase = function(id) {
 	return ret;
 };
 
-RMMV.PluginBase.Web.getPluginBases = function() {
-	var ret = null;
+RMMV.PluginBase.Web.getPluginBases = function(page, pageSize) {
+	var url = RMMV.Web.baseUrl + "/v1/base";
+	if (page) {
+		if (!pageSize) {
+			pageSize = 10;
+		}
+		url = RMMV.Web.baseUrl + "/v1/base?page=" + page + "&pageSize=" + pageSize;
+	}
+	
+	var ret = {};
 	$.ajax({
 		type: "GET",
 		accept: "application/json",
-		url: RMMV.Web.baseUrl + "/v1/base",
-		success: function(data) {
-			ret = RMMV.PluginBase.createArray(data);
+		url: url,
+		success: function(data, status, xhr) {
+			var count = xhr.getResponseHeader("record-count");
+			ret.records = RMMV.PluginBase.createArray(data);
+			ret.count = count;
 		},
 		async: false
 	});

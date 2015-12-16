@@ -1,0 +1,12 @@
+<div class="page-turner-container">
+	<button class="page-turner"
+		ng-disabled="!hasPrev();" 
+		ng-click="prevPage();">&lt;</button>
+	<span class="page-numbers">
+		<span ng-disabled="page == n" ng-class="{selected: page == n}" ng-repeat="n in range(1, pageCount)" ng-click="goToPage(n);">{{n}}</span>
+	</span>
+	<button class="page-turner"
+		ng-disabled="!hasNext();" 
+		ng-click="nextPage();">&gt;</button>
+	<div>Page Size:<input class="page-turner" type="number" ng-model="pageSize" ng-change="changePageSize(pageSize)"></input></div>
+</div>

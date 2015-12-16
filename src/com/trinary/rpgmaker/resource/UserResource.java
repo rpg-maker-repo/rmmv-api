@@ -13,7 +13,6 @@ import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -28,7 +27,6 @@ import javax.ws.rs.core.SecurityContext;
 
 import com.trinary.rpgmaker.persistence.entity.User;
 import com.trinary.rpgmaker.ro.UserRO;
-import com.trinary.rpgmaker.ro.git.PushEventRO;
 import com.trinary.rpgmaker.service.UserService;
 
 @Path("/v1/user")
@@ -131,22 +129,5 @@ public class UserResource {
 			@QueryParam("page") Integer page, 
 			@QueryParam("pageSize") Integer pageSize) {
 		return Response.ok(userService.getPlugins(username, page, pageSize)).build();
-	}
-	
-	@Path("/{username}/event")
-	@POST
-	@ApiOperation(value = "Publish a github event")
-	public Response handleEvent(
-			@PathParam("username") String username, 
-			@HeaderParam("X-Hub-Event") String event,
-			@HeaderParam("X-Hub-Signature") String signature,
-			@HeaderParam("X-Hub-Delivery") String delivery,
-			PushEventRO pushEvent) {
-		System.out.println("USER:      " + username);
-		System.out.println("EVENT:     " + event);
-		System.out.println("SIGNATURE: " + signature);
-		System.out.println("DELIVERY:  " + delivery);
-		System.out.println("PAYLOAD:   " + pushEvent);
-		return Response.ok().build();
 	}
 }

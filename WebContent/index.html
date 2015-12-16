@@ -14,6 +14,7 @@
 	<link rel="stylesheet" href="css/flatly.min.css" />
 	<link rel="stylesheet" href="css/custom.css" />
 	<link rel="stylesheet" href="css/plugins.css" />
+	<link rel="stylesheet" href="css/page-turner.css" />
 
 	<script src="https://code.angularjs.org/1.4.7/angular.min.js"></script>
 	<script	src="https://code.angularjs.org/1.4.7/angular-route.min.js"></script>
@@ -68,6 +69,12 @@
 
 		<div ng-show="page.view == 'view-plugins'">
 			<h2>All Plugins</h2>
+			<div style="margin-left: 10px;">Plugins in Database: {{pluginView.recordCount}}</div>
+			<page-turner 
+				page="pluginView.page" 
+				pageSize="pluginView.pageSize" 
+				recordCount="pluginView.recordCount" 
+				onPageChange="reloadPluginList"></page-turner>
 			<div class="plugin-list">
 				<div id="plugin-{{plugin.id}}" class="panel panel-info" ng-repeat="plugin in plugins">
 					<div class="panel-heading">{{plugin.name}}</div>
@@ -116,6 +123,11 @@
 					</div>
 				</div>
 			</div>
+			<page-turner 
+				page="pluginView.page" 
+				pageSize="pluginView.pageSize" 
+				recordCount="pluginView.recordCount"
+				onPageChange="reloadPluginList"></page-turner>
 		</div>
 		<div ng-show="page.view == 'create-plugin'">
 			<h2>Create New Plugin</h2>

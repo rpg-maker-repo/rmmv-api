@@ -26,6 +26,10 @@ app.controller('page-controller', function($scope, $cookies) {
 	// Plugin page
 	$scope.page = {};
 	$scope.page.view = "view-plugins";
+	$scope.pluginView = {};
+	$scope.pluginView.page = 1;
+	$scope.pluginView.pageSize = 2;
+	$scope.pluginView.recordCount = null;
 	$scope.plugins = [];
 	$scope.users = RMMV.User.Web.getUsers();
 	
@@ -192,8 +196,14 @@ app.controller('page-controller', function($scope, $cookies) {
 		plugin.dependencies.push(dependency);
 	};
 
-	$scope.reloadPluginList = function() {
-		$scope.plugins = RMMV.PluginBase.Web.getPluginBases();
+	$scope.reloadPluginList = function(page, pageSize) {
+		var wrapper = RMMV.PluginBase.Web.getPluginBases(page, pageSize);
+		
+		$scope.plugins = wrapper.records;
+		$scope.pluginView.recordCount = wrapper.count;
+		$scope.pluginView.page = page;
+		$scope.pluginView.pageSize = pageSize;
+		
 		for (var i = 0; i < $scope.plugins.length; i++) {
 			var plugin = $scope.plugins[i];
 			plugin.versions = plugin.getVersions();
@@ -293,7 +303,7 @@ app.controller('page-controller', function($scope, $cookies) {
 		
 		// Go back to view-plugins page.
 		$scope.page.view = "view-plugins";
-		$scope.reloadPluginList();
+		$scope.reloadPluginList(1, $scope.pageSize);
 	};
 	
 	$scope.createPluginVersion = function(base, pluginVersion, dependencies) {
@@ -330,7 +340,7 @@ app.controller('page-controller', function($scope, $cookies) {
 		
 		// Go back to view-plugins page.
 		$scope.page.view = "view-plugins";
-		$scope.reloadPluginList();
+		$scope.reloadPluginList(1, $scope.pageSize);
 	};
 	
 	$scope.clearForm = function(formId) {
@@ -345,7 +355,62 @@ app.controller('page-controller', function($scope, $cookies) {
 		pluginVersion.filename = element.files[0].name;
 	};
 	
-	$scope.reloadPluginList();
+	$scope.reloadPluginList(1, $scope.pluginView.pageSize);
 	$scope.refreshCookie();
 	$scope.checkAuthentication();
+});
+
+app.directive("pageTurner", function() {
+	return {
+		restrict: "E",
+		scope: {
+			page: "=page",
+			pageSize: "=pagesize",
+			recordCount: "=recordcount",
+			callback: "&onpagechange"
+		},
+		controller: function($scope) {
+			var callback = $scope.callback();
+			
+			$scope.$watch('recordCount', function () {				
+				$scope.pageCount = Math.ceil($scope.recordCount/$scope.pageSize);
+			}, true);
+			
+			$scope.changePageSize = function(pageSize) {
+				if (pageSize > 0) {
+					callback(1, pageSize);
+				}
+			};
+			$scope.nextPage = function() {
+				if ($scope.hasNext()) {
+					callback(++$scope.page, $scope.pageSize);
+				}
+			};
+			$scope.prevPage = function() {
+				if ($scope.hasPrev()) {
+					callback(--$scope.page, $scope.pageSize);
+				}
+			};
+			$scope.goToPage = function(pageNumber) {
+				if ($scope.page == pageNumber) {
+					return;
+				}
+				$scope.page = pageNumber;
+				callback($scope.page, $scope.pageSize);
+			};
+			$scope.hasPrev = function() {
+				return $scope.page > 1;
+			};
+			$scope.hasNext = function() {
+				return $scope.page < $scope.pageCount;
+			};
+			$scope.range = function(min, max, step){
+			    step = step || 1;
+			    var input = [];
+			    for (var i = min; i <= max; i += step) input.push(i);
+			    return input;
+			};
+		},
+		templateUrl: "templates/page-turner.html"
+	}
 });

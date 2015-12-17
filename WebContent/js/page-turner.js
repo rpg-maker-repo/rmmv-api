@@ -11,12 +11,13 @@ angular.module("deus.pageTurner", [])
 			controller: function($scope) {
 				var callback = $scope.callback();
 				
-				$scope.$watch('recordCount', function () {				
+				$scope.$watch('[recordCount, pageSize]', function () {				
 					$scope.pageCount = Math.ceil($scope.recordCount/$scope.pageSize);
 				}, true);
 				
 				$scope.changePageSize = function(pageSize) {
 					if (pageSize > 0) {
+						$scope.pageSize = pageSize;
 						callback(1, pageSize);
 					}
 				};
